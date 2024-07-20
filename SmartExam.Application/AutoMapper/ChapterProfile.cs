@@ -17,8 +17,6 @@ namespace SmartExam.Application.AutoMapper
                 .ForMember(src => src.Id, opt => opt.Ignore());
 
             CreateMap<Chapter, ChapterDTO>();
-
-            CreateMap<Chapter, UpdateChapterDTO>();
         }
     }
 }

@@ -2,6 +2,7 @@
 using AutoMapper;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
+using SmartExam.Application.DTOs.ApiResponse;
 using SmartExam.Application.DTOs.Chapter;
 using SmartExam.Application.Interfaces.Repositories;
 using SmartExam.Domain.Entities;
@@ -29,52 +30,75 @@ namespace SmartExam.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
+            ApiResponse<IReadOnlyList<ChapterDTO>> response = new ApiResponse<IReadOnlyList<ChapterDTO>>();
+
             IReadOnlyList<Chapter> result = await _unitOfWork.ChapterRepository.GetAllAsync();
             IReadOnlyList<ChapterDTO>  dto = _mapper.Map<IReadOnlyList<ChapterDTO>>(result);
 
-            return Ok(dto);
+            response.IsSuccess = true;
+            response.Data = dto;
+
+            return Ok(response);
         }
 
         // GET api/<ChapterController>/5
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
+            ApiResponse<ChapterDTO> response = new ApiResponse<ChapterDTO>();
+
             Chapter result = await _unitOfWork.ChapterRepository.GetByIdAsync(id, []);
             ChapterDTO dto = _mapper.Map<ChapterDTO>(result);
 
-            return Ok(dto);
+            response.IsSuccess = true;
+            response.Data = dto;
+
+            return Ok(response);
         }
 
         // POST api/<ChapterController>
         [HttpPost]
         public async Task<IActionResult> Add([FromBody] AddChapterDTO dto)
         {
-            var exists = await _unitOfWork.ChapterRepository.GetWhereAsync(a => a.Name == dto.Name); 
-            if (exists.Count() > 0)
+            ApiResponse<Chapter> response = new ApiResponse<Chapter>();
+            try
             {
-                return BadRequest("هذا الاسم موجود بالفعل");
-            }
-            else
-            {
-                Chapter chapter = _mapper.Map<Chapter>(dto);
-
-                var validationResult = await _validator.ValidateAsync(chapter);
-                if (!validationResult.IsValid)
+                var exists = await _unitOfWork.ChapterRepository.GetWhereAsync(a => a.Name == dto.Name);
+                if (exists.Count() > 0)
                 {
-                    List<string> errors = new List<string>();
-                    foreach (var error in validationResult.Errors)
-                    {
-                        errors.Add(error.ErrorMessage);
-                    }
-                    return BadRequest(errors);
+                    response.ErrorMessages.Add("هذا الاسم موجود بالفعل");
+                    return BadRequest(response);
                 }
                 else
                 {
-                    await _unitOfWork.ChapterRepository.AddAsync(chapter);
-                    await _unitOfWork.CompleteAsync();
+                    Chapter chapter = _mapper.Map<Chapter>(dto);
 
-                    return Ok(chapter);
+                    var validationResult = await _validator.ValidateAsync(chapter);
+                    if (!validationResult.IsValid)
+                    {
+                        foreach (var error in validationResult.Errors)
+                        {
+                            response.ErrorMessages.Add(error.ErrorMessage);
+                        }
+                        return BadRequest(response);
+                    }
+                    else
+                    {
+                        await _unitOfWork.ChapterRepository.AddAsync(chapter);
+                        await _unitOfWork.CompleteAsync();
+
+                        response.IsSuccess = true;
+                        response.Data =chapter;
+                        response.Message = "تم الاضافة بنجاح";
+
+                        return Ok(response);
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                response.ErrorMessages.Add(ex.Message);
+                return BadRequest(response);
             }
         }
 
@@ -82,50 +106,76 @@ namespace SmartExam.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] UpdateChapterDTO dto)
         {
-            Chapter chapter = await _unitOfWork.ChapterRepository.GetByIdAsync(id, []);
-            if (chapter is null)
+            ApiResponse<Chapter> response = new ApiResponse<Chapter>();
+            try
             {
-                return NotFound("لايوجد فصل");
-            }
-            else
-            {
-                chapter.Name = dto.Name;
-            
-                var validationResult = await _validator.ValidateAsync(chapter);
-                if (!validationResult.IsValid)
+                Chapter chapter = await _unitOfWork.ChapterRepository.GetByIdAsync(id, []);
+                if (chapter is null)
                 {
-                    List<string> errors = new List<string>();
-                    foreach (var error in validationResult.Errors)
-                    {
-                        errors.Add(error.ErrorMessage);
-                    }
-                    return BadRequest(errors);
+                    response.ErrorMessages.Add("لايوجد فصل");
+                    return NotFound(response);
                 }
                 else
                 {
-                    await _unitOfWork.ChapterRepository.UpdateAsync(id, chapter);
-                    await _unitOfWork.CompleteAsync();
+                    chapter.Name = dto.Name;
 
-                    return Ok(chapter);
+                    var validationResult = await _validator.ValidateAsync(chapter);
+                    if (!validationResult.IsValid)
+                    {
+                        foreach (var error in validationResult.Errors)
+                        {
+                            response.ErrorMessages.Add(error.ErrorMessage);
+                        }
+                        return BadRequest(response);
+                    }
+                    else
+                    {
+                        await _unitOfWork.ChapterRepository.UpdateAsync(id, chapter);
+                        await _unitOfWork.CompleteAsync();
+
+                        response.IsSuccess = true;
+                        response.Message = "تم التعديل بنجاح";
+                        response.Data = chapter;
+
+                        return Ok(response);
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                response.ErrorMessages.Add(ex.Message);
+                return BadRequest(response);
             }
         }
 
         // DELETE api/<ChapterController>/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        [HttpPost]
+        public async Task<IActionResult> Delete([FromBody] DeleteChapterDTO dto)
         {
-            var result = await _unitOfWork.ChapterRepository.GetByIdAsync(id, []);
-            if (result == null)
+            ApiResponse<string> response = new ApiResponse<string>();
+            try
             {
-                return BadRequest("لايوجد بيانات لمسحها");
-            }
-            else
-            {
-                await _unitOfWork.ChapterRepository.DeleteAsync(id);
-                await _unitOfWork.CompleteAsync();
+                var result = await _unitOfWork.ChapterRepository.GetByIdAsync(dto.Id, []);
+                if (result == null)
+                {
+                    response.ErrorMessages.Add("لايوجد بيانات لحذفها");
+                    return BadRequest(response);
+                }
+                else
+                {
+                    await _unitOfWork.ChapterRepository.DeleteAsync(dto.Id);
+                    await _unitOfWork.CompleteAsync();
 
-                return Ok("تم الحذف بنجاح");
+                    response.IsSuccess = true;
+                    response.Message = "تم الحذف بنجاح";
+
+                    return Ok(response);
+                }
+            }
+            catch (Exception ex)
+            {
+                response.ErrorMessages.Add(ex.Message);
+                return BadRequest(response);
             }
         }
     }
