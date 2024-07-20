@@ -15,6 +15,7 @@ using SmartExam.Domain.Entities;
 using SmartExam.Infrastructure.Repositories;
 using System.Reflection;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Hosting;
 
 namespace SmartExam.Infrastructure.Extensions
 {
@@ -37,8 +38,11 @@ namespace SmartExam.Infrastructure.Extensions
         private static void AddRepositories(this IServiceCollection services)
         {
             services
+                // Repositories
                 .AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork))
                 //.AddTransient(typeof(IUserService), typeof(UserService))
+                //.AddScoped<IJWTManagerRepository, JWTManagerRepository>()
+
                 .Configure<IdentityOptions>(options =>
                 {
                     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
@@ -51,10 +55,12 @@ namespace SmartExam.Infrastructure.Extensions
                     options.User.RequireUniqueEmail = true;
                 })
 
-                //.AddScoped<IJWTManagerRepository, JWTManagerRepository>()
+                // Auto Mappers
+                .AddAutoMapper(typeof(Chapter))
+                
+                // Identities
                 .AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
-            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
-
+                
         }
 
     }
