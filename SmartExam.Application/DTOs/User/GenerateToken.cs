@@ -10,6 +10,6 @@ namespace Application.DTOs.User
     {
         public string? Token { get; set; }
         public DateTime? TokenExpiration { get; set; }
-        public string UserId { get; set; }
+        public string? UserId { get; set; }
     }
 }
