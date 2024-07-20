@@ -21,6 +21,8 @@ using FluentValidation;
 using SmartExam.Infrastructure.Validators.ChapterValidator;
 using Application.Interfaces.Repositories;
 using Infrastructure.Repositories;
+using Application.Interfaces.Services;
+using Infrastructure.Services;
 
 namespace SmartExam.Infrastructure.Extensions
 {
@@ -48,6 +50,9 @@ namespace SmartExam.Infrastructure.Extensions
                 .AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork))
                 .AddScoped<IJWTManagerRepository, JWTManagerRepository>()
 
+                // Services
+                .AddScoped<IUserService, UserService>()
+
                 .Configure<IdentityOptions>(options =>
                 {
                     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
@@ -65,7 +70,6 @@ namespace SmartExam.Infrastructure.Extensions
                 
                 // Identities
                 .AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
-                
         }
 
         private static void AddFluentValidation(this IServiceCollection services)

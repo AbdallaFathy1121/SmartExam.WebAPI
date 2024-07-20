@@ -25,7 +25,6 @@ namespace SmartExam.API.Controllers
             _mapper = mapper;
         }
 
-
         // GET: api/<ChapterController>
         [HttpGet]
         public async Task<IActionResult> GetAll()
@@ -66,7 +65,7 @@ namespace SmartExam.API.Controllers
                 var exists = await _unitOfWork.ChapterRepository.GetWhereAsync(a => a.Name == dto.Name);
                 if (exists.Count() > 0)
                 {
-                    response.ErrorMessages.Add("هذا الاسم موجود بالفعل");
+                    response.ErrorMessages!.Add("هذا الاسم موجود بالفعل");
                     return BadRequest(response);
                 }
                 else
@@ -78,7 +77,7 @@ namespace SmartExam.API.Controllers
                     {
                         foreach (var error in validationResult.Errors)
                         {
-                            response.ErrorMessages.Add(error.ErrorMessage);
+                            response.ErrorMessages!.Add(error.ErrorMessage);
                         }
                         return BadRequest(response);
                     }
@@ -88,7 +87,7 @@ namespace SmartExam.API.Controllers
                         await _unitOfWork.CompleteAsync();
 
                         response.IsSuccess = true;
-                        response.Data =chapter;
+                        response.Data = chapter;
                         response.Message = "تم الاضافة بنجاح";
 
                         return Ok(response);
@@ -97,7 +96,7 @@ namespace SmartExam.API.Controllers
             }
             catch (Exception ex)
             {
-                response.ErrorMessages.Add(ex.Message);
+                response.ErrorMessages!.Add(ex.Message);
                 return BadRequest(response);
             }
         }
@@ -112,7 +111,7 @@ namespace SmartExam.API.Controllers
                 Chapter chapter = await _unitOfWork.ChapterRepository.GetByIdAsync(id, []);
                 if (chapter is null)
                 {
-                    response.ErrorMessages.Add("لايوجد فصل");
+                    response.ErrorMessages!.Add("لايوجد فصل");
                     return NotFound(response);
                 }
                 else
@@ -124,7 +123,7 @@ namespace SmartExam.API.Controllers
                     {
                         foreach (var error in validationResult.Errors)
                         {
-                            response.ErrorMessages.Add(error.ErrorMessage);
+                            response.ErrorMessages!.Add(error.ErrorMessage);
                         }
                         return BadRequest(response);
                     }
@@ -143,13 +142,13 @@ namespace SmartExam.API.Controllers
             }
             catch (Exception ex)
             {
-                response.ErrorMessages.Add(ex.Message);
+                response.ErrorMessages!.Add(ex.Message);
                 return BadRequest(response);
             }
         }
 
-        // DELETE api/<ChapterController>/5
-        [HttpPost]
+        // DELETE api/<ChapterController>
+        [HttpPost("Delete")]
         public async Task<IActionResult> Delete([FromBody] DeleteChapterDTO dto)
         {
             ApiResponse<string> response = new ApiResponse<string>();
@@ -158,7 +157,7 @@ namespace SmartExam.API.Controllers
                 var result = await _unitOfWork.ChapterRepository.GetByIdAsync(dto.Id, []);
                 if (result == null)
                 {
-                    response.ErrorMessages.Add("لايوجد بيانات لحذفها");
+                    response.ErrorMessages!.Add("لايوجد بيانات لحذفها");
                     return BadRequest(response);
                 }
                 else
@@ -174,7 +173,7 @@ namespace SmartExam.API.Controllers
             }
             catch (Exception ex)
             {
-                response.ErrorMessages.Add(ex.Message);
+                response.ErrorMessages!.Add(ex.Message);
                 return BadRequest(response);
             }
         }
