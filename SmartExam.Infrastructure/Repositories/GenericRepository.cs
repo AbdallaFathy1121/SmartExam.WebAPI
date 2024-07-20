@@ -24,7 +24,7 @@ namespace SmartExam.Infrastructure.Repositories
             await _context.Set<T>().AddAsync(entity);
         }
 
-        public async Task DeleteAsync(T id)
+        public async Task DeleteAsync(int id)
         {
             var entity = await _context.Set<T>().FindAsync(id);
             if (entity is not null)
@@ -50,7 +50,7 @@ namespace SmartExam.Infrastructure.Repositories
             return await query.AsNoTracking().ToListAsync();
         }
 
-        public async Task<T> GetByIdAsync(T id, params Expression<Func<T, object>>[] includes)
+        public async Task<T> GetByIdAsync(int id, params Expression<Func<T, object>>[] includes)
         {
             IQueryable<T> query = _context.Set<T>();
             // Apply any includes
@@ -74,7 +74,7 @@ namespace SmartExam.Infrastructure.Repositories
             return result;
         }
 
-        public async Task UpdateAsync(T id, T entity)
+        public async Task UpdateAsync(int id, T entity)
         {
             var existingEntity = await _context.Set<T>().FindAsync(id);
             if (existingEntity is not null)

@@ -16,6 +16,9 @@ using SmartExam.Infrastructure.Repositories;
 using System.Reflection;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using SmartExam.Application.AutoMapper;
+using FluentValidation;
+using SmartExam.Infrastructure.Validators.ChapterValidator;
 
 namespace SmartExam.Infrastructure.Extensions
 {
@@ -25,6 +28,7 @@ namespace SmartExam.Infrastructure.Extensions
         {
             services.AddDbContext(configuration);
             services.AddRepositories();
+            services.AddFluentValidation();
         }
         public static void AddDbContext(this IServiceCollection services, IConfiguration configuration)
         {
@@ -61,6 +65,14 @@ namespace SmartExam.Infrastructure.Extensions
                 // Identities
                 .AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
                 
+        }
+
+        private static void AddFluentValidation(this IServiceCollection services)
+        {
+            services.AddFluentValidation(fv =>
+            {
+                fv.RegisterValidatorsFromAssemblyContaining<ChapterValidator>();
+            });
         }
 
     }

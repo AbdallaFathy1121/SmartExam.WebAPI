@@ -13,11 +13,12 @@ namespace SmartExam.Application.AutoMapper
     {
         public ChapterProfile()
         {
-            CreateMap<Chapter, AddChapterDTO>();
-
-
             CreateMap<AddChapterDTO, Chapter>()
                 .ForMember(src => src.Id, opt => opt.Ignore());
+
+            CreateMap<Chapter, ChapterDTO>();
+
+            CreateMap<Chapter, UpdateChapterDTO>();
         }
     }
 }
