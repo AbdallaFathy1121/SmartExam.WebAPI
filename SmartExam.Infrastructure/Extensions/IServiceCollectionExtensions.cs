@@ -19,6 +19,8 @@ using Microsoft.AspNetCore.Hosting;
 using SmartExam.Application.AutoMapper;
 using FluentValidation;
 using SmartExam.Infrastructure.Validators.ChapterValidator;
+using Application.Interfaces.Repositories;
+using Infrastructure.Repositories;
 
 namespace SmartExam.Infrastructure.Extensions
 {
@@ -44,8 +46,7 @@ namespace SmartExam.Infrastructure.Extensions
             services
                 // Repositories
                 .AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork))
-                //.AddTransient(typeof(IUserService), typeof(UserService))
-                //.AddScoped<IJWTManagerRepository, JWTManagerRepository>()
+                .AddScoped<IJWTManagerRepository, JWTManagerRepository>()
 
                 .Configure<IdentityOptions>(options =>
                 {
@@ -69,10 +70,7 @@ namespace SmartExam.Infrastructure.Extensions
 
         private static void AddFluentValidation(this IServiceCollection services)
         {
-            services.AddFluentValidation(fv =>
-            {
-                fv.RegisterValidatorsFromAssemblyContaining<ChapterValidator>();
-            });
+            services.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<ChapterValidator>());
         }
 
     }
