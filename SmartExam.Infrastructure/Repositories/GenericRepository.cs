@@ -50,12 +50,6 @@ namespace SmartExam.Infrastructure.Repositories
             return await query.AsNoTracking().ToListAsync();
         }
 
-        public async Task<T> GetAsync(T id)
-        {
-            var entity = await _context.Set<T>().FindAsync(id);
-            return entity;
-        }
-
         public async Task<T> GetByIdAsync(T id, params Expression<Func<T, object>>[] includes)
         {
             IQueryable<T> query = _context.Set<T>();
@@ -65,6 +59,19 @@ namespace SmartExam.Infrastructure.Repositories
                 query = query.Include(item);
             }
             return await ((DbSet<T>)query).FindAsync(id);
+        }
+
+        public async Task<IList<T>> GetWhereAsync(Expression<Func<T, bool>> match, params Expression<Func<T, object>>[] includes)
+        {
+            IQueryable<T> query = _context.Set<T>();
+            // Apply any includes
+            foreach (var item in includes)
+            {
+                query = query.Include(item);
+            }
+            var result = await query.Where(match).AsNoTracking().ToListAsync();
+
+            return result;
         }
 
         public async Task UpdateAsync(T id, T entity)
