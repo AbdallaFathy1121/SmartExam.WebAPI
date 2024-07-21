@@ -10,5 +10,9 @@ namespace SmartExam.Domain.Entities
     public class Chapter: BaseEntity
     {
         public required string Name { get; set; }
+        public required int SubjectId { get; set; }
+
+        // Relations
+        public virtual Subject? Subject { get; set; } = null;
     }
 }

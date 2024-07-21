@@ -1,6 +1,7 @@
 ﻿
 using AutoMapper;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SmartExam.Application.DTOs.ApiResponse;
 using SmartExam.Application.DTOs.Chapter;
@@ -11,6 +12,7 @@ using System.Collections.Generic;
 
 namespace SmartExam.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ChapterController : ControllerBase
@@ -59,10 +61,17 @@ namespace SmartExam.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Add([FromBody] AddChapterDTO dto)
         {
-            ApiResponse<Chapter> response = new ApiResponse<Chapter>();
+            ApiResponse<AddChapterDTO> response = new ApiResponse<AddChapterDTO>();
             try
             {
-                var exists = await _unitOfWork.ChapterRepository.GetWhereAsync(a => a.Name == dto.Name);
+                var findSubjectById = await _unitOfWork.SubjectRepository.GetByIdAsync(dto.SubjectId);
+                if (findSubjectById is null)
+                {
+                    response.ErrorMessages!.Add("Invalid SubjectId");
+                    return BadRequest(response);
+                }
+
+                var exists = await _unitOfWork.ChapterRepository.GetWhereAsync(a => a.Name == dto.Name && a.SubjectId == dto.SubjectId);
                 if (exists.Count() > 0)
                 {
                     response.ErrorMessages!.Add("هذا الاسم موجود بالفعل");
@@ -87,7 +96,7 @@ namespace SmartExam.API.Controllers
                         await _unitOfWork.CompleteAsync();
 
                         response.IsSuccess = true;
-                        response.Data = chapter;
+                        response.Data = dto;
                         response.Message = "تم الاضافة بنجاح";
 
                         return Ok(response);

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace SmartExam.Application.DTOs.Chapter
 {
     public record AddChapterDTO (
-        string Name
+        string Name,
+        int SubjectId
     );
 }

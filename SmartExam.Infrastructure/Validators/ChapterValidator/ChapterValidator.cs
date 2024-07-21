@@ -14,8 +14,10 @@ namespace SmartExam.Infrastructure.Validators.ChapterValidator
         {
             RuleFor(x => x.Name)
                 .NotEmpty().WithMessage("يجب كتابة الاسم")
-                .NotNull().WithMessage("هذا الحقل مطلوب")
-                .MinimumLength(10).WithMessage("يجب كتابة الاسم بالكامل");
+                .NotNull().WithMessage("Name is Required");
+
+            RuleFor(x => x.SubjectId)
+                .NotNull().WithMessage("SubjectId is Required");
         }
     }
 }
