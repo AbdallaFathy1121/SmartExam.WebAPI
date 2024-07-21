@@ -18,6 +18,6 @@ namespace SmartExam.Domain.Entities
 
         // Relations
         public virtual User? User { get; set; } = null;
-        public ICollection<Chapter>? Chapters { get; set; }
+        public virtual ICollection<Chapter>? Chapters { get; set; }
     }
 }

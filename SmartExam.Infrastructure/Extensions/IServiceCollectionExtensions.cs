@@ -23,6 +23,7 @@ using Application.Interfaces.Repositories;
 using Infrastructure.Repositories;
 using Application.Interfaces.Services;
 using Infrastructure.Services;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace SmartExam.Infrastructure.Extensions
 {
@@ -73,6 +74,7 @@ namespace SmartExam.Infrastructure.Extensions
         {
             services
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<ChapterValidator>())
+                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<ModelValidator>())
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<SubjectValidator>());
         }
 

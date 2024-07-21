@@ -10,6 +10,8 @@ namespace SmartExam.Application.Interfaces.Repositories
     {
         IChapterRepository ChapterRepository { get; }
         ISubjectRepository SubjectRepository { get; }
+        IModelRepository ModelRepository { get; }
+
         Task<int> CompleteAsync();
     }
 }
