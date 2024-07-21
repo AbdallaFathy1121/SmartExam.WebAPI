@@ -51,7 +51,8 @@ namespace Application.Extensions
             services
                 // AutoMapper
                .AddAutoMapper(typeof(ChapterProfile).Assembly)
-               .AddAutoMapper(typeof(SubjectProfile).Assembly);
+               .AddAutoMapper(typeof(SubjectProfile).Assembly)
+               .AddAutoMapper(typeof(ModelProfile).Assembly);
         }
     }
 }

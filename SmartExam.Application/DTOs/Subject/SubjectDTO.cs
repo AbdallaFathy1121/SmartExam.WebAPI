@@ -11,6 +11,6 @@ namespace SmartExam.Application.DTOs.Subject
       int Id,
       string Name,
       string UserId,
-      User? User = null
+      object? User = null
     );
 }

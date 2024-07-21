@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+﻿using SmartExam.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
