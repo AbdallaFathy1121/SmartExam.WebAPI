@@ -2,6 +2,7 @@ using Application.Extensions;
 using FluentValidation.AspNetCore;
 using Microsoft.OpenApi.Models;
 using SmartExam.Infrastructure.Extensions;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,7 +10,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddInfrastructureLayer(builder.Configuration);
 builder.Services.AddApplicationLayer(builder.Configuration);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    options.JsonSerializerOptions.WriteIndented = true;
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(opt =>

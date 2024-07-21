@@ -9,6 +9,7 @@ namespace SmartExam.Application.Interfaces.Repositories
     public interface IUnitOfWork: IDisposable
     {
         IChapterRepository ChapterRepository { get; }
+        ISubjectRepository SubjectRepository { get; }
         Task<int> CompleteAsync();
     }
 }

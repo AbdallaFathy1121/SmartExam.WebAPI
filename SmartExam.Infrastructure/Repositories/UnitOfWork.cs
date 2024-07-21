@@ -12,12 +12,14 @@ namespace SmartExam.Infrastructure.Repositories
     {
         private readonly ApplicationDbContext _context;
         public IChapterRepository ChapterRepository { get; private set; }
+        public ISubjectRepository SubjectRepository { get; private set; }
 
 
         public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
             ChapterRepository = new ChapterRepository(context);
+            SubjectRepository = new SubjectRepository(context);
         }
 
         public async Task<int> CompleteAsync()

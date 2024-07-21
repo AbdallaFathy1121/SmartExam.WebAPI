@@ -65,16 +65,15 @@ namespace SmartExam.Infrastructure.Extensions
                     options.User.RequireUniqueEmail = true;
                 })
 
-                // Auto Mappers
-                .AddAutoMapper(typeof(Chapter))
-                
                 // Identities
                 .AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
         }
 
         private static void AddFluentValidation(this IServiceCollection services)
         {
-            services.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<ChapterValidator>());
+            services
+                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<ChapterValidator>())
+                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<SubjectValidator>());
         }
 
     }

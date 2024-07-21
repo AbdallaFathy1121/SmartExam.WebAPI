@@ -50,7 +50,8 @@ namespace Application.Extensions
         {
             services
                 // AutoMapper
-               .AddAutoMapper(typeof(ChapterProfile).Assembly);
+               .AddAutoMapper(typeof(ChapterProfile).Assembly)
+               .AddAutoMapper(typeof(SubjectProfile).Assembly);
         }
     }
 }

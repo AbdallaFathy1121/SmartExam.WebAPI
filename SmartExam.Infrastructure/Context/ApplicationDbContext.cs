@@ -17,6 +17,7 @@ namespace Namshi.Infrastructure.Context
         }
 
         public virtual DbSet<Chapter> Chapters { get; set; }
+        public virtual DbSet<Subject> Subjects { get; set; }
 
     }
 }
