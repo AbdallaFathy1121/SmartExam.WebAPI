@@ -15,8 +15,7 @@ namespace SmartExam.Application.AutoMapper
     {
         public SubjectProfile()
         {
-            CreateMap<AddSubjectDTO, Subject>()
-                .ForMember(src => src.Id, opt => opt.Ignore());
+            CreateMap<AddSubjectDTO, Subject>();
 
             CreateMap<Subject, SubjectDTO>();
         }

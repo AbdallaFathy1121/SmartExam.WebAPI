@@ -103,7 +103,7 @@ namespace SmartExam.API.Controllers
 
         // PUT api/<ChapterController>/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] UpdateChapterDTO dto)
+        public async Task<IActionResult> Update(int id, [FromBody] UpdateChapterDTO dto)
         {
             ApiResponse<Chapter> response = new ApiResponse<Chapter>();
             try
@@ -155,7 +155,7 @@ namespace SmartExam.API.Controllers
             try
             {
                 var result = await _unitOfWork.ChapterRepository.GetByIdAsync(dto.Id, []);
-                if (result == null)
+                if (result is null)
                 {
                     response.ErrorMessages!.Add("لايوجد بيانات لحذفها");
                     return BadRequest(response);

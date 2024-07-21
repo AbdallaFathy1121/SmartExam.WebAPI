@@ -4,6 +4,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SmartExam.Application.DTOs.ApiResponse;
+using SmartExam.Application.DTOs.Chapter;
 using SmartExam.Application.DTOs.Subject;
 using SmartExam.Application.Interfaces.Repositories;
 using SmartExam.Domain.Entities;
@@ -31,31 +32,52 @@ namespace SmartExam.API.Controllers
 
 
         // GET: api/<SubjectsController>
-        //[HttpGet]
-        //public async Task<IActionResult> GetAll()
-        //{
-        //    ApiResponse<List<Subject>> apiResponse = new ApiResponse<List<Subject>>();
-        //    try
-        //    {
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            ApiResponse<IList<SubjectDTO>> response = new ApiResponse<IList<SubjectDTO>>();
+            try
+            {
+                IReadOnlyList<Subject> subjects = await _unitOfWork.SubjectRepository.GetAllAsync();
+                IList<SubjectDTO> data = _mapper.Map<IList<SubjectDTO>>(subjects);
 
-        //    }
-        //    catch (Exception ex)
-        //    {
+                response.IsSuccess = true;
+                response.Data = data;
 
-        //        throw;
-        //    }
-        //}
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                response.ErrorMessages!.Add(ex.Message);
+                return BadRequest(response);
+            }
+        }
 
         // GET api/<SubjectsController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<IActionResult> GetById(int id)
         {
-            return "value";
+            ApiResponse<SubjectDTO> response = new ApiResponse<SubjectDTO>();
+            try
+            {
+                Subject subject = await _unitOfWork.SubjectRepository.GetByIdAsync(id);
+                SubjectDTO data = _mapper.Map<SubjectDTO>(subject);
+
+                response.IsSuccess = true;
+                response.Data = data;
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                response.ErrorMessages!.Add(ex.Message);
+                return BadRequest(response);
+            }
         }
 
         // POST api/<SubjectsController>
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] AddSubjectDTO dto)
+        public async Task<IActionResult> Add([FromBody] AddSubjectDTO dto)
         {
             ApiResponse<string> response = new ApiResponse<string>();
             try
@@ -99,14 +121,80 @@ namespace SmartExam.API.Controllers
 
         // PUT api/<SubjectsController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<IActionResult> Update(int id, [FromBody] UpdateSubjectDTO dto)
         {
+            ApiResponse<Subject> response = new ApiResponse<Subject>();
+            try
+            {
+                Subject subject = await _unitOfWork.SubjectRepository.GetByIdAsync(id);
+                if (subject is null || subject.UserId != dto.UserId)
+                {
+                    response.ErrorMessages!.Add("لايوجد مادة");
+                    return NotFound(response);
+                }
+                else
+                {
+                    subject.Name = dto.Name;
+
+                    var validationResult = await _validator.ValidateAsync(subject);
+                    if (!validationResult.IsValid)
+                    {
+                        foreach (var error in validationResult.Errors)
+                        {
+                            response.ErrorMessages!.Add(error.ErrorMessage);
+                        }
+                        return BadRequest(response);
+                    }
+                    else
+                    {
+                        await _unitOfWork.SubjectRepository.UpdateAsync(id, subject);
+                        await _unitOfWork.CompleteAsync();
+
+                        response.IsSuccess = true;
+                        response.Message = "تم التعديل بنجاح";
+                        response.Data = subject;
+
+                        return Ok(response);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                response.ErrorMessages!.Add(ex.Message);
+                return BadRequest(response);
+            }
+
         }
 
         // DELETE api/<SubjectsController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpPost("Delete")]
+        public async Task<IActionResult> Delete([FromBody] DeleteSubjectDTO dto)
         {
+            ApiResponse<string> response = new ApiResponse<string>();
+            try
+            {
+                var result = await _unitOfWork.SubjectRepository.GetByIdAsync(dto.Id);
+                if (result is null)
+                {
+                    response.ErrorMessages!.Add("لايوجد بيانات لحذفها");
+                    return BadRequest(response);
+                }
+                else
+                {
+                    await _unitOfWork.SubjectRepository.DeleteAsync(dto.Id);
+                    await _unitOfWork.CompleteAsync();
+
+                    response.IsSuccess = true;
+                    response.Message = "تم الحذف بنجاح";
+
+                    return Ok(response);
+                }
+            }
+            catch (Exception ex)
+            {
+                response.ErrorMessages!.Add(ex.Message);
+                return BadRequest(response);
+            }
         }
     }
 }
