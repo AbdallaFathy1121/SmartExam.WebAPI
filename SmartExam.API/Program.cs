@@ -1,6 +1,10 @@
 using Application.Extensions;
 using FluentValidation.AspNetCore;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using Serilog;
+using SmartExam.Application.ErorrHandling;
+using SmartExam.Application.LoggingActionFilter;
 using SmartExam.Infrastructure.Extensions;
 using System.Text.Json.Serialization;
 
@@ -9,6 +13,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddInfrastructureLayer(builder.Configuration);
 builder.Services.AddApplicationLayer(builder.Configuration);
+
+// Configure Serilog
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console(outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}")
+    .WriteTo.File("logs/myapp.txt", rollingInterval: RollingInterval.Day, outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}")
+    .CreateLogger();
+builder.Host.UseSerilog();
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
@@ -47,6 +58,9 @@ builder.Services.AddSwaggerGen(opt =>
 });
 
 var app = builder.Build();
+
+// Exception Handling
+app.UseMiddleware<ErrorHandlingMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
