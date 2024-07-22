@@ -8,10 +8,16 @@ namespace SmartExam.Domain.Entities
 {
     public class Model: BaseEntity
     {
+        public Model()
+        {
+            Questions = new HashSet<Question>();    
+        }
+
         public required string Name { get; set; }
         public required int ChapterId { get; set; }
 
         // Relations
         public virtual Chapter? Chapter { get; set; } = null;
+        public virtual ICollection<Question>? Questions { get; set; }
     }
 }
