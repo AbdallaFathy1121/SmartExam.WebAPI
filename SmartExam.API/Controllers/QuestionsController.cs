@@ -71,43 +71,36 @@ namespace SmartExam.API.Controllers
         public async Task<IActionResult> Add([FromBody] AddQuestionDTO dto)
         {
             ApiResponse<AddQuestionDTO> response = new ApiResponse<AddQuestionDTO>();
-            try
+
+            var findModelById = await _unitOfWork.ModelRepository.GetByIdAsync(dto.ModelId);
+            if (findModelById is not null)
             {
-                var findModelById = await _unitOfWork.ModelRepository.GetByIdAsync(dto.ModelId);
-                if (findModelById is not null)
+                Question question = _mapper.Map<Question>(dto);
+
+                var validationResult = await _validator.ValidateAsync(question);
+                if (!validationResult.IsValid)
                 {
-                    Question question = _mapper.Map<Question>(dto);
-
-                    var validationResult = await _validator.ValidateAsync(question);
-                    if (!validationResult.IsValid)
+                    foreach (var error in validationResult.Errors)
                     {
-                        foreach (var error in validationResult.Errors)
-                        {
-                            response.ErrorMessages!.Add(error.ErrorMessage);
-                        }
-                        return BadRequest(response);
+                        response.ErrorMessages!.Add(error.ErrorMessage);
                     }
-                    else
-                    {
-                        await _unitOfWork.QuestionRepository.AddAsync(question);
-                        await _unitOfWork.CompleteAsync();
-
-                        response.IsSuccess = true;
-                        response.Data = dto;
-                        response.Message = "تم الاضافة بنجاح";
-
-                        return Ok(response);
-                    }
+                    return BadRequest(response);
                 }
                 else
                 {
-                    response.ErrorMessages!.Add("Invalid Model Id");
-                    return BadRequest(response);
+                    await _unitOfWork.QuestionRepository.AddAsync(question);
+                    await _unitOfWork.CompleteAsync();
+
+                    response.IsSuccess = true;
+                    response.Data = dto;
+                    response.Message = "تم الاضافة بنجاح";
+
+                    return Ok(response);
                 }
             }
-            catch (Exception ex)
+            else
             {
-                response.ErrorMessages!.Add(ex.Message);
+                response.ErrorMessages!.Add("Invalid Model Id");
                 return BadRequest(response);
             }
         }
@@ -117,49 +110,42 @@ namespace SmartExam.API.Controllers
         public async Task<IActionResult> Update(int id, [FromBody] UpdateQuestionDTO dto)
         {
             ApiResponse<Question> response = new ApiResponse<Question>();
-            try
+             
+            Question question = await _unitOfWork.QuestionRepository.GetByIdAsync(id);
+            if (question is not null)
             {
-                Question question = await _unitOfWork.QuestionRepository.GetByIdAsync(id);
-                if (question is not null)
+                question.QuestionName = dto.QuestionName;
+                question.Answer1 = dto.Answer1;
+                question.Answer2 = dto.Answer2;
+                question.Answer3 = dto.Answer3;
+                question.Answer4 = dto.Answer4;
+                question.CorrectAnswer = dto.CorrectAnswer;
+
+                var validationResult = await _validator.ValidateAsync(question);
+                if (!validationResult.IsValid)
                 {
-                    question.QuestionName = dto.QuestionName;
-                    question.Answer1 = dto.Answer1;
-                    question.Answer2 = dto.Answer2;
-                    question.Answer3 = dto.Answer3;
-                    question.Answer4 = dto.Answer4;
-                    question.CorrectAnswer = dto.CorrectAnswer;
-
-                    var validationResult = await _validator.ValidateAsync(question);
-                    if (!validationResult.IsValid)
+                    foreach (var error in validationResult.Errors)
                     {
-                        foreach (var error in validationResult.Errors)
-                        {
-                            response.ErrorMessages!.Add(error.ErrorMessage);
-                        }
-                        return BadRequest(response);
+                        response.ErrorMessages!.Add(error.ErrorMessage);
                     }
-                    else
-                    {
-                        await _unitOfWork.QuestionRepository.UpdateAsync(id, question);
-                        await _unitOfWork.CompleteAsync();
-
-                        response.IsSuccess = true;
-                        response.Message = "تم التعديل بنجاح";
-                        response.Data = question;
-
-                        return Ok(response);
-                    }
+                    return BadRequest(response);
                 }
                 else
                 {
-                    response.ErrorMessages!.Add("لا يوجد سؤال");
-                    return NotFound(response);
+                    await _unitOfWork.QuestionRepository.UpdateAsync(id, question);
+                    await _unitOfWork.CompleteAsync();
+
+                    response.IsSuccess = true;
+                    response.Message = "تم التعديل بنجاح";
+                    response.Data = question;
+
+                    return Ok(response);
                 }
             }
-            catch (Exception ex)
+            else
             {
-                response.ErrorMessages!.Add(ex.Message);
-                return BadRequest(response);
+                response.ErrorMessages!.Add("لا يوجد سؤال");
+                return NotFound(response);
             }
         }
 
@@ -168,28 +154,21 @@ namespace SmartExam.API.Controllers
         public async Task<IActionResult> Delete([FromBody] DeleteQuestionDTO dto)
         {
             ApiResponse<string> response = new ApiResponse<string>();
-            try
+             
+            Question question = await _unitOfWork.QuestionRepository.GetByIdAsync(dto.Id);
+            if (question is not null)
             {
-                Question question = await _unitOfWork.QuestionRepository.GetByIdAsync(dto.Id);
-                if (question is not null)
-                {
-                    await _unitOfWork.QuestionRepository.DeleteAsync(dto.Id);
-                    await _unitOfWork.CompleteAsync();
+                await _unitOfWork.QuestionRepository.DeleteAsync(dto.Id);
+                await _unitOfWork.CompleteAsync();
 
-                    response.IsSuccess = true;
-                    response.Message = "تم الحذف بنجاح";
+                response.IsSuccess = true;
+                response.Message = "تم الحذف بنجاح";
 
-                    return Ok(response);
-                }
-                else
-                {
-                    response.ErrorMessages!.Add("لايوجد بيانات لحذفها");
-                    return BadRequest(response);
-                }
+                return Ok(response);
             }
-            catch (Exception ex)
+            else
             {
-                response.ErrorMessages!.Add(ex.Message);
+                response.ErrorMessages!.Add("لايوجد بيانات لحذفها");
                 return BadRequest(response);
             }
         }

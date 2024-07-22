@@ -62,52 +62,46 @@ namespace SmartExam.API.Controllers
         public async Task<IActionResult> Add([FromBody] AddChapterDTO dto)
         {
             ApiResponse<AddChapterDTO> response = new ApiResponse<AddChapterDTO>();
-            try
+            
+            var findSubjectById = await _unitOfWork.SubjectRepository.GetByIdAsync(dto.SubjectId);
+            if (findSubjectById is null)
             {
-                var findSubjectById = await _unitOfWork.SubjectRepository.GetByIdAsync(dto.SubjectId);
-                if (findSubjectById is null)
-                {
-                    response.ErrorMessages!.Add("Invalid SubjectId");
-                    return BadRequest(response);
-                }
+                response.ErrorMessages!.Add("Invalid SubjectId");
+                return BadRequest(response);
+            }
 
-                var exists = await _unitOfWork.ChapterRepository.GetWhereAsync(a => a.Name == dto.Name && a.SubjectId == dto.SubjectId);
-                if (exists.Count() > 0)
+            var exists = await _unitOfWork.ChapterRepository.GetWhereAsync(a => a.Name == dto.Name && a.SubjectId == dto.SubjectId);
+            if (exists.Count() > 0)
+            {
+                response.ErrorMessages!.Add("هذا الاسم موجود بالفعل");
+                return BadRequest(response);
+            }
+            else
+            {
+                Chapter chapter = _mapper.Map<Chapter>(dto);
+
+                var validationResult = await _validator.ValidateAsync(chapter);
+                if (!validationResult.IsValid)
                 {
-                    response.ErrorMessages!.Add("هذا الاسم موجود بالفعل");
+                    foreach (var error in validationResult.Errors)
+                    {
+                        response.ErrorMessages!.Add(error.ErrorMessage);
+                    }
                     return BadRequest(response);
                 }
                 else
                 {
-                    Chapter chapter = _mapper.Map<Chapter>(dto);
+                    await _unitOfWork.ChapterRepository.AddAsync(chapter);
+                    await _unitOfWork.CompleteAsync();
 
-                    var validationResult = await _validator.ValidateAsync(chapter);
-                    if (!validationResult.IsValid)
-                    {
-                        foreach (var error in validationResult.Errors)
-                        {
-                            response.ErrorMessages!.Add(error.ErrorMessage);
-                        }
-                        return BadRequest(response);
-                    }
-                    else
-                    {
-                        await _unitOfWork.ChapterRepository.AddAsync(chapter);
-                        await _unitOfWork.CompleteAsync();
+                    response.IsSuccess = true;
+                    response.Data = dto;
+                    response.Message = "تم الاضافة بنجاح";
 
-                        response.IsSuccess = true;
-                        response.Data = dto;
-                        response.Message = "تم الاضافة بنجاح";
-
-                        return Ok(response);
-                    }
+                    return Ok(response);
                 }
             }
-            catch (Exception ex)
-            {
-                response.ErrorMessages!.Add(ex.Message);
-                return BadRequest(response);
-            }
+
         }
 
         // PUT api/<ChapterController>/5
@@ -115,44 +109,37 @@ namespace SmartExam.API.Controllers
         public async Task<IActionResult> Update(int id, [FromBody] UpdateChapterDTO dto)
         {
             ApiResponse<Chapter> response = new ApiResponse<Chapter>();
-            try
+
+            Chapter chapter = await _unitOfWork.ChapterRepository.GetByIdAsync(id, []);
+            if (chapter is null)
             {
-                Chapter chapter = await _unitOfWork.ChapterRepository.GetByIdAsync(id, []);
-                if (chapter is null)
+                response.ErrorMessages!.Add("لايوجد فصل");
+                return NotFound(response);
+            }
+            else
+            {
+                chapter.Name = dto.Name;
+
+                var validationResult = await _validator.ValidateAsync(chapter);
+                if (!validationResult.IsValid)
                 {
-                    response.ErrorMessages!.Add("لايوجد فصل");
-                    return NotFound(response);
+                    foreach (var error in validationResult.Errors)
+                    {
+                        response.ErrorMessages!.Add(error.ErrorMessage);
+                    }
+                    return BadRequest(response);
                 }
                 else
                 {
-                    chapter.Name = dto.Name;
+                    await _unitOfWork.ChapterRepository.UpdateAsync(id, chapter);
+                    await _unitOfWork.CompleteAsync();
 
-                    var validationResult = await _validator.ValidateAsync(chapter);
-                    if (!validationResult.IsValid)
-                    {
-                        foreach (var error in validationResult.Errors)
-                        {
-                            response.ErrorMessages!.Add(error.ErrorMessage);
-                        }
-                        return BadRequest(response);
-                    }
-                    else
-                    {
-                        await _unitOfWork.ChapterRepository.UpdateAsync(id, chapter);
-                        await _unitOfWork.CompleteAsync();
+                    response.IsSuccess = true;
+                    response.Message = "تم التعديل بنجاح";
+                    response.Data = chapter;
 
-                        response.IsSuccess = true;
-                        response.Message = "تم التعديل بنجاح";
-                        response.Data = chapter;
-
-                        return Ok(response);
-                    }
+                    return Ok(response);
                 }
-            }
-            catch (Exception ex)
-            {
-                response.ErrorMessages!.Add(ex.Message);
-                return BadRequest(response);
             }
         }
 
@@ -161,29 +148,22 @@ namespace SmartExam.API.Controllers
         public async Task<IActionResult> Delete([FromBody] DeleteChapterDTO dto)
         {
             ApiResponse<string> response = new ApiResponse<string>();
-            try
+             
+            var result = await _unitOfWork.ChapterRepository.GetByIdAsync(dto.Id, []);
+            if (result is null)
             {
-                var result = await _unitOfWork.ChapterRepository.GetByIdAsync(dto.Id, []);
-                if (result is null)
-                {
-                    response.ErrorMessages!.Add("لايوجد بيانات لحذفها");
-                    return BadRequest(response);
-                }
-                else
-                {
-                    await _unitOfWork.ChapterRepository.DeleteAsync(dto.Id);
-                    await _unitOfWork.CompleteAsync();
-
-                    response.IsSuccess = true;
-                    response.Message = "تم الحذف بنجاح";
-
-                    return Ok(response);
-                }
-            }
-            catch (Exception ex)
-            {
-                response.ErrorMessages!.Add(ex.Message);
+                response.ErrorMessages!.Add("لايوجد بيانات لحذفها");
                 return BadRequest(response);
+            }
+            else
+            {
+                await _unitOfWork.ChapterRepository.DeleteAsync(dto.Id);
+                await _unitOfWork.CompleteAsync();
+
+                response.IsSuccess = true;
+                response.Message = "تم الحذف بنجاح";
+
+                return Ok(response);
             }
         }
     }

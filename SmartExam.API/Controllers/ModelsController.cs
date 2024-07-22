@@ -60,51 +60,44 @@ namespace SmartExam.API.Controllers
         public async Task<IActionResult> Add([FromBody] AddModelDTO dto)
         {
             ApiResponse<AddModelDTO> response = new ApiResponse<AddModelDTO>();
-            try
-            {
-                var findChapterById = await _unitOfWork.ChapterRepository.GetByIdAsync(dto.ChapterId);
-                if (findChapterById is null)
-                {
-                    response.ErrorMessages!.Add("Invalid Chapter Id");
-                    return BadRequest(response);
-                }
 
-                var exists = await _unitOfWork.ModelRepository.GetWhereAsync(a => a.Name == dto.Name && a.ChapterId == dto.ChapterId);
-                if (exists.Count() > 0)
+            var findChapterById = await _unitOfWork.ChapterRepository.GetByIdAsync(dto.ChapterId);
+            if (findChapterById is null)
+            {
+                response.ErrorMessages!.Add("Invalid Chapter Id");
+                return BadRequest(response);
+            }
+
+            var exists = await _unitOfWork.ModelRepository.GetWhereAsync(a => a.Name == dto.Name && a.ChapterId == dto.ChapterId);
+            if (exists.Count() > 0)
+            {
+                response.ErrorMessages!.Add("هذا الاسم موجود بالفعل");
+                return BadRequest(response);
+            }
+            else
+            {
+                Model model = _mapper.Map<Model>(dto);
+
+                var validationResult = await _validator.ValidateAsync(model);
+                if (!validationResult.IsValid)
                 {
-                    response.ErrorMessages!.Add("هذا الاسم موجود بالفعل");
+                    foreach (var error in validationResult.Errors)
+                    {
+                        response.ErrorMessages!.Add(error.ErrorMessage);
+                    }
                     return BadRequest(response);
                 }
                 else
                 {
-                    Model model = _mapper.Map<Model>(dto);
+                    await _unitOfWork.ModelRepository.AddAsync(model);
+                    await _unitOfWork.CompleteAsync();
 
-                    var validationResult = await _validator.ValidateAsync(model);
-                    if (!validationResult.IsValid)
-                    {
-                        foreach (var error in validationResult.Errors)
-                        {
-                            response.ErrorMessages!.Add(error.ErrorMessage);
-                        }
-                        return BadRequest(response);
-                    }
-                    else
-                    {
-                        await _unitOfWork.ModelRepository.AddAsync(model);
-                        await _unitOfWork.CompleteAsync();
+                    response.IsSuccess = true;
+                    response.Data = dto;
+                    response.Message = "تم الاضافة بنجاح";
 
-                        response.IsSuccess = true;
-                        response.Data = dto;
-                        response.Message = "تم الاضافة بنجاح";
-
-                        return Ok(response);
-                    }
+                    return Ok(response);
                 }
-            }
-            catch (Exception ex)
-            {
-                response.ErrorMessages!.Add(ex.Message);
-                return BadRequest(response);
             }
         }
 
@@ -113,44 +106,37 @@ namespace SmartExam.API.Controllers
         public async Task<IActionResult> Update(int id, [FromBody] UpdateModelDTO dto)
         {
             ApiResponse<Model> response = new ApiResponse<Model>();
-            try
+
+            Model model = await _unitOfWork.ModelRepository.GetByIdAsync(id, []);
+            if (model is null)
             {
-                Model model = await _unitOfWork.ModelRepository.GetByIdAsync(id, []);
-                if (model is null)
+                response.ErrorMessages!.Add("لايوجد هذا النموذج");
+                return NotFound(response);
+            }
+            else
+            {
+                model.Name = dto.Name;
+
+                var validationResult = await _validator.ValidateAsync(model);
+                if (!validationResult.IsValid)
                 {
-                    response.ErrorMessages!.Add("لايوجد هذا النموذج");
-                    return NotFound(response);
+                    foreach (var error in validationResult.Errors)
+                    {
+                        response.ErrorMessages!.Add(error.ErrorMessage);
+                    }
+                    return BadRequest(response);
                 }
                 else
                 {
-                    model.Name = dto.Name;
+                    await _unitOfWork.ModelRepository.UpdateAsync(id, model);
+                    await _unitOfWork.CompleteAsync();
 
-                    var validationResult = await _validator.ValidateAsync(model);
-                    if (!validationResult.IsValid)
-                    {
-                        foreach (var error in validationResult.Errors)
-                        {
-                            response.ErrorMessages!.Add(error.ErrorMessage);
-                        }
-                        return BadRequest(response);
-                    }
-                    else
-                    {
-                        await _unitOfWork.ModelRepository.UpdateAsync(id, model);
-                        await _unitOfWork.CompleteAsync();
+                    response.IsSuccess = true;
+                    response.Message = "تم التعديل بنجاح";
+                    response.Data = model;
 
-                        response.IsSuccess = true;
-                        response.Message = "تم التعديل بنجاح";
-                        response.Data = model;
-
-                        return Ok(response);
-                    }
+                    return Ok(response);
                 }
-            }
-            catch (Exception ex)
-            {
-                response.ErrorMessages!.Add(ex.Message);
-                return BadRequest(response);
             }
         }
 
@@ -159,29 +145,22 @@ namespace SmartExam.API.Controllers
         public async Task<IActionResult> Delete([FromBody] DeleteModelDTO dto)
         {
             ApiResponse<string> response = new ApiResponse<string>();
-            try
-            {
-                Model model = await _unitOfWork.ModelRepository.GetByIdAsync(dto.Id, []);
-                if (model is null)
-                {
-                    response.ErrorMessages!.Add("لايوجد بيانات لحذفها");
-                    return BadRequest(response);
-                }
-                else
-                {
-                    await _unitOfWork.ModelRepository.DeleteAsync(dto.Id);
-                    await _unitOfWork.CompleteAsync();
 
-                    response.IsSuccess = true;
-                    response.Message = "تم الحذف بنجاح";
-
-                    return Ok(response);
-                }
-            }
-            catch (Exception ex)
+            Model model = await _unitOfWork.ModelRepository.GetByIdAsync(dto.Id, []);
+            if (model is null)
             {
-                response.ErrorMessages!.Add(ex.Message);
+                response.ErrorMessages!.Add("لايوجد بيانات لحذفها");
                 return BadRequest(response);
+            }
+            else
+            {
+                await _unitOfWork.ModelRepository.DeleteAsync(dto.Id);
+                await _unitOfWork.CompleteAsync();
+
+                response.IsSuccess = true;
+                response.Message = "تم الحذف بنجاح";
+
+                return Ok(response);
             }
         }
     }

@@ -1,11 +1,13 @@
 using Application.Extensions;
 using FluentValidation.AspNetCore;
+using Infrastructure.Services;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using SmartExam.Application.ErorrHandling;
-using SmartExam.Application.LoggingActionFilter;
+using SmartExam.Application.Interfaces.Services;
 using SmartExam.Infrastructure.Extensions;
+using SmartExam.Infrastructure.Services;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +15,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddInfrastructureLayer(builder.Configuration);
 builder.Services.AddApplicationLayer(builder.Configuration);
+
+builder.Services.AddTransient<IInitialService, InitialService>();
 
 // Configure Serilog
 Log.Logger = new LoggerConfiguration()
@@ -61,6 +65,14 @@ var app = builder.Build();
 
 // Exception Handling
 app.UseMiddleware<ErrorHandlingMiddleware>();
+
+// Run the initialization logic
+using (var scope = app.Services.CreateScope())
+{
+    var initializer = scope.ServiceProvider.GetRequiredService<IInitialService>();
+    await initializer.Initialize();
+}
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
