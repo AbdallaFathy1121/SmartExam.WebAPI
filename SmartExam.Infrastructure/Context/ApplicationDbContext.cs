@@ -20,5 +20,6 @@ namespace Namshi.Infrastructure.Context
         public virtual DbSet<Subject> Subjects { get; set; }
         public virtual DbSet<Model> Models { get; set; }
         public virtual DbSet<Question> Questions { get; set; }
+        public virtual DbSet<Exam> Exams { get; set; }
     }
 }

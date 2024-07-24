@@ -12,11 +12,13 @@ namespace SmartExam.Domain.Entities
         public User()
         {
             Subjects = new HashSet<Subject>();
+            Exams = new HashSet<Exam>();
         }
 
         public required string Name { get; set; }
 
         // Relations
         public virtual ICollection<Subject>? Subjects { get; set; }
+        public virtual ICollection<Exam>? Exams { get; set; }
     }
 }
