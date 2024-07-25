@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,24 +12,31 @@ namespace SmartExam.Application.ErorrHandling
     public class ErrorHandlingMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly ILogger<ErrorHandlingMiddleware> _logger;
-        public ErrorHandlingMiddleware(RequestDelegate next, ILogger<ErrorHandlingMiddleware> logger)
+        public ErrorHandlingMiddleware(RequestDelegate next)
         {
             _next = next;
-            _logger = logger;
         }
 
         public async Task InvokeAsync(HttpContext context)
         {
             try
             {
+                // Log the request
+                Log.Information("Handling request: {Method} {Url}", context.Request.Method, context.Request.Path);
+
+                // Call the next middleware in the pipeline
                 await _next(context);
+
+                // Log the response
+                Log.Information("Finished handling request: {Method} {Url} with status code {StatusCode}",
+                                context.Request.Method, context.Request.Path, context.Response.StatusCode);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An unhandled exception has occurred.");
-                context.Response.StatusCode = 500;
-                await context.Response.WriteAsync($"Exception: {ex.Message}");
+                // Log the exception
+                Log.Error(ex, "An error occurred while handling request: {Method} {Url}",
+                          context.Request.Method, context.Request.Path);
+                throw;
             }
         }
     }

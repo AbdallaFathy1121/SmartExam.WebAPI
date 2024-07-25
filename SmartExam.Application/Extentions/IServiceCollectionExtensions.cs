@@ -53,6 +53,7 @@ namespace Application.Extensions
                .AddAutoMapper(typeof(ChapterProfile).Assembly)
                .AddAutoMapper(typeof(SubjectProfile).Assembly)
                .AddAutoMapper(typeof(QuestionProfile).Assembly)
+               .AddAutoMapper(typeof(ExamProfile).Assembly)
                .AddAutoMapper(typeof(ModelProfile).Assembly);
         }
     }

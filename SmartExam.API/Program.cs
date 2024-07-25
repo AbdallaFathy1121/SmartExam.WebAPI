@@ -1,7 +1,4 @@
 using Application.Extensions;
-using FluentValidation.AspNetCore;
-using Infrastructure.Services;
-using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using SmartExam.Application.ErorrHandling;
@@ -19,10 +16,7 @@ builder.Services.AddApplicationLayer(builder.Configuration);
 builder.Services.AddTransient<IInitialService, InitialService>();
 
 // Configure Serilog
-Log.Logger = new LoggerConfiguration()
-    .WriteTo.Console(outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}")
-    .WriteTo.File("logs/myapp.txt", rollingInterval: RollingInterval.Day, outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}")
-    .CreateLogger();
+SerilogConfig.ConfigureLogging();
 builder.Host.UseSerilog();
 
 builder.Services.AddControllers().AddJsonOptions(options =>
@@ -35,7 +29,7 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(opt =>
 {
-    opt.SwaggerDoc("v1", new OpenApiInfo { Title = "E Exam Web API", Version = "v1" });
+    opt.SwaggerDoc("v1", new OpenApiInfo { Title = "Smart Exam Web API", Version = "v1" });
     opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
@@ -76,7 +70,7 @@ using (var scope = app.Services.CreateScope())
 
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
+if (app.Environment.IsProduction())
 {
     app.UseSwagger();
     app.UseSwaggerUI(c =>
@@ -84,6 +78,10 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
         c.RoutePrefix = string.Empty; // To serve Swagger UI at the app's root
     });
+} else if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseCors(x => x
