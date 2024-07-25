@@ -10,6 +10,7 @@ namespace SmartExam.Application.DTOs.Exam
         string Name,
         DateOnly StartDate,
         TimeOnly StartTime,
-        int DurrationTime
+        int DurrationTime,
+        bool Status
     );
 }

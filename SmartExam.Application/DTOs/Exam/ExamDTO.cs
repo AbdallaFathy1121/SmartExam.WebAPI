@@ -12,7 +12,10 @@ namespace SmartExam.Application.DTOs.Exam
         DateOnly StartDate,
         TimeOnly StartTime,
         int DurrationTime,
+        bool Status,
         string userId,
-        object? User = null
+        int SubjectId,
+        object? User = null,
+        object? Subject = null
     );
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Namshi.Infrastructure.Context;
 
@@ -11,9 +12,11 @@ using Namshi.Infrastructure.Context;
 namespace SmartExam.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240725093722_Add Status in Exam Entity")]
+    partial class AddStatusinExamEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -207,16 +210,11 @@ namespace SmartExam.Infrastructure.Migrations
                     b.Property<bool?>("Status")
                         .HasColumnType("bit");
 
-                    b.Property<int>("SubjectId")
-                        .HasColumnType("int");
-
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("SubjectId");
 
                     b.HasIndex("UserId");
 
@@ -450,19 +448,11 @@ namespace SmartExam.Infrastructure.Migrations
 
             modelBuilder.Entity("SmartExam.Domain.Entities.Exam", b =>
                 {
-                    b.HasOne("SmartExam.Domain.Entities.Subject", "Subject")
-                        .WithMany("Exams")
-                        .HasForeignKey("SubjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("SmartExam.Domain.Entities.User", "User")
                         .WithMany("Exams")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Subject");
 
                     b.Navigation("User");
                 });
@@ -513,8 +503,6 @@ namespace SmartExam.Infrastructure.Migrations
             modelBuilder.Entity("SmartExam.Domain.Entities.Subject", b =>
                 {
                     b.Navigation("Chapters");
-
-                    b.Navigation("Exams");
                 });
 
             modelBuilder.Entity("SmartExam.Domain.Entities.User", b =>

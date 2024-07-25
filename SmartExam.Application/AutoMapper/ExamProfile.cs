@@ -14,7 +14,8 @@ namespace SmartExam.Application.AutoMapper
     {
         public ExamProfile()
         {
-            CreateMap<AddExamDTO, Exam>();
+            CreateMap<AddExamDTO, Exam>()
+                .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.StartDate));
 
             CreateMap<Model, ExamDTO>();
         }

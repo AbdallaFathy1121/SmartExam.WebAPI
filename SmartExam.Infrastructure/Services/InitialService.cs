@@ -28,7 +28,6 @@ namespace SmartExam.Infrastructure.Services
             if (!await _roleManager.RoleExistsAsync(Roles.Admin))
             {
                 await _roleManager.CreateAsync(new IdentityRole(Roles.Admin));
-                await _roleManager.CreateAsync(new IdentityRole(Roles.Teacher));
             }
 
             var adminEmail = "admin@admin.com";

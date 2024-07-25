@@ -11,6 +11,7 @@ namespace SmartExam.Domain.Entities
         public Subject()
         {
             Chapters = new HashSet<Chapter>();
+            Exams = new HashSet<Exam>();
         }
 
         public required string Name { get; set; }
@@ -19,5 +20,6 @@ namespace SmartExam.Domain.Entities
         // Relations
         public virtual User? User { get; set; } = null;
         public virtual ICollection<Chapter>? Chapters { get; set; }
+        public virtual ICollection<Exam>? Exams { get; set; }
     }
 }
