@@ -8,8 +8,8 @@ namespace SmartExam.Application.DTOs.Exam
 {
     public record AddExamDTO (
         string Name,
-        DateOnly StartDate,
-        TimeOnly StartTime,
+        string StartDate,  // Note: StartDate is a string here
+        string StartTime,  // Note: StartTime is a string here
         int DurrationTime,
         string userId,
         int subjectId

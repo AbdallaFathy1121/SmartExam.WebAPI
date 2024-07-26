@@ -7,6 +7,7 @@ using SmartExam.Application.DTOs.ApiResponse;
 using SmartExam.Application.DTOs.Exam;
 using SmartExam.Application.Interfaces.Repositories;
 using SmartExam.Domain.Entities;
+using System.Globalization;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -37,11 +38,7 @@ namespace SmartExam.API.Controllers
 
             IReadOnlyList<Exam> exams = await _unitOfWork.ExamRepository.GetAllAsync();
 
-            IReadOnlyList<ExamDTO> data = [];
-            if (exams.Count() > 0)
-            {
-                data = _mapper.Map<IReadOnlyList<ExamDTO>>(exams);
-            }
+            IReadOnlyList<ExamDTO> data = _mapper.Map<IReadOnlyList<ExamDTO>>(exams);
 
             response.IsSuccess = true;
             response.Data = data;
@@ -57,11 +54,7 @@ namespace SmartExam.API.Controllers
 
             IList<Exam> exams = await _unitOfWork.ExamRepository.GetWhereAsync(a => a.UserId == userId);
 
-            IList<ExamDTO> data = [];
-            if (exams.Count() > 0)
-            {
-                data = _mapper.Map<IList<ExamDTO>>(exams);
-            }
+            IList<ExamDTO> data = _mapper.Map<IList<ExamDTO>>(exams);
 
             response.IsSuccess = true;
             response.Data = data;
@@ -104,6 +97,7 @@ namespace SmartExam.API.Controllers
                 Subject findSubjectById = await _unitOfWork.SubjectRepository.GetByIdAsync(dto.subjectId);
                 if (findSubjectById is not null)
                 {
+
                     Exam exam = _mapper.Map<Exam>(dto);
 
                     var validationResult = await _validator.ValidateAsync(exam);
@@ -149,9 +143,19 @@ namespace SmartExam.API.Controllers
             Exam exam = await _unitOfWork.ExamRepository.GetByIdAsync(id);
             if (exam is not null)
             {
+                // Assuming the string is in the format "yyyy-MM-dd"
+                if (DateOnly.TryParseExact(dto.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var date))
+                {
+                    exam.StartDate = date;
+                }
+
+                // Assuming the string is in the format "HH:mm"
+                if (TimeOnly.TryParseExact(dto.StartTime, "HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out var time))
+                {
+                    exam.StartTime = time;
+                }
+
                 exam.Name = dto.Name;
-                exam.StartDate = dto.StartDate;
-                exam.StartTime = dto.StartTime;
                 exam.DurationTime = dto.DurrationTime;
                 exam.Status = dto.Status;
 

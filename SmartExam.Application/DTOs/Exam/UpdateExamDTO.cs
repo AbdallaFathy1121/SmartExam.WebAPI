@@ -8,8 +8,8 @@ namespace SmartExam.Application.DTOs.Exam
 {
     public record UpdateExamDTO (
         string Name,
-        DateOnly StartDate,
-        TimeOnly StartTime,
+        string StartDate,
+        string StartTime,
         int DurrationTime,
         bool Status
     );

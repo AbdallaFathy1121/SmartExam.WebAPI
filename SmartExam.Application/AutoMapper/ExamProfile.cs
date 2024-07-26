@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using SmartExam.Application.DTOs.Exam;
 using SmartExam.Application.DTOs.Model;
+using SmartExam.Application.TypeConverter;
 using SmartExam.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -14,10 +15,18 @@ namespace SmartExam.Application.AutoMapper
     {
         public ExamProfile()
         {
-            CreateMap<AddExamDTO, Exam>()
-                .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.StartDate));
+            // Create map with custom type converters
+            CreateMap<string, DateOnly>().ConvertUsing<DateOnlyTypeConverter>();
+            CreateMap<string, TimeOnly>().ConvertUsing<TimeOnlyTypeConverter>();
 
-            CreateMap<Model, ExamDTO>();
+
+            CreateMap<AddExamDTO, Exam>()
+                .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.StartDate))
+                .ForMember(dest => dest.StartTime, opt => opt.MapFrom(src => src.StartTime));
+
+            CreateMap<Exam, ExamDTO>()
+                .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.StartDate))
+                .ForMember(dest => dest.StartTime, opt => opt.MapFrom(src => src.StartTime));
         }
     }
 }

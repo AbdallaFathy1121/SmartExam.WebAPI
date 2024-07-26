@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using SmartExam.Application.AutoMapper;
 using SmartExam.Application.Interfaces.Repositories;
+using SmartExam.Application.TypeConverter;
 using SmartExam.Domain.Entities;
 using System;
 using System.Collections.Generic;
