@@ -8,6 +8,11 @@ namespace SmartExam.Domain.Entities
 {
     public class Exam: BaseEntity
     {
+        public Exam()
+        {
+            ExamQueries = new HashSet<ExamQuery>();
+        }
+
         public required string Name { get; set; }
         public required DateOnly StartDate { get; set; }
         public required TimeOnly StartTime { get; set; }
@@ -19,5 +24,6 @@ namespace SmartExam.Domain.Entities
         // Relations
         public virtual User? User { get; set; }
         public virtual Subject? Subject { get; set; }
+        public virtual ICollection<ExamQuery>? ExamQueries { get; set; }
     }
 }
