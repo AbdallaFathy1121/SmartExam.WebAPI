@@ -26,6 +26,7 @@ using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using SmartExam.Infrastructure.Validators.QuestionValidator;
 using SmartExam.Infrastructure.Validators.ExamValidator;
+using SmartExam.Infrastructure.Validators.ExamQueryValidator;
 
 namespace SmartExam.Infrastructure.Extensions
 {
@@ -79,6 +80,7 @@ namespace SmartExam.Infrastructure.Extensions
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<ModelValidator>())
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<QuestionValidator>())
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<ExamValidator>())
+                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<ExamQueryValidator>())
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<SubjectValidator>());
         }
 

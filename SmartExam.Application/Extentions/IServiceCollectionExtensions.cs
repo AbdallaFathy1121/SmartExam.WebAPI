@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using SmartExam.Application.AutoMapper;
+using SmartExam.Application.DTOs.Exam;
 using SmartExam.Application.Interfaces.Repositories;
 using SmartExam.Application.TypeConverter;
 using SmartExam.Domain.Entities;
@@ -55,6 +56,7 @@ namespace Application.Extensions
                .AddAutoMapper(typeof(SubjectProfile).Assembly)
                .AddAutoMapper(typeof(QuestionProfile).Assembly)
                .AddAutoMapper(typeof(ExamProfile).Assembly)
+               .AddAutoMapper(typeof(ExamQueryProfile).Assembly)
                .AddAutoMapper(typeof(ModelProfile).Assembly);
         }
     }

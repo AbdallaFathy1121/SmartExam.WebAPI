@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SmartExam.Application.DTOs.Model
+namespace SmartExam.Application.DTOs.ExamQuery
 {
-    public record ExamQueryDTO (
-        int Id,
-        string Name,
+    public record AddExamQueryDTO (
+        int ExamId,
         int ChapterId,
-        object? Chapter = null
+        int ModelId,
+        int QuestionNumbers
     );
 }

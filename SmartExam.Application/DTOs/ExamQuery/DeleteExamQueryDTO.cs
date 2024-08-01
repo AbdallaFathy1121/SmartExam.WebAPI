@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SmartExam.Application.DTOs.Model
+namespace SmartExam.Application.DTOs.ExamQuery
 {
-    public record UpdateExamQueryDTO(
-        string Name
+    public record DeleteExamQueryDTO (
+        int Id
     );
 }
