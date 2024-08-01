@@ -30,7 +30,7 @@ namespace SmartExam.API.Controllers
 
 
         // GET: api/<ExamQueriesController>
-        [HttpGet]
+        [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {
             ApiResponse<IReadOnlyList<ExamQueryDTO>> response = new ApiResponse<IReadOnlyList<ExamQueryDTO>>();
@@ -86,7 +86,7 @@ namespace SmartExam.API.Controllers
 
         // POST api/<ExamQueriesController>
         [HttpPost("Add")]
-        public async Task<IActionResult> Add([FromForm] AddExamQueryDTO dto)
+        public async Task<IActionResult> Add([FromBody] AddExamQueryDTO dto)
         {
             ApiResponse<AddExamQueryDTO> response = new ApiResponse<AddExamQueryDTO>();
 
@@ -126,7 +126,7 @@ namespace SmartExam.API.Controllers
 
         // PUT api/<ExamQueriesController>/Update/5
         [HttpPut("Update/{id}")]
-        public async Task<IActionResult> Update(int id, [FromForm] UpdateExamQueryDTO dto)
+        public async Task<IActionResult> Update(int id, [FromBody] UpdateExamQueryDTO dto)
         {
             ApiResponse<ExamQuery> response = new ApiResponse<ExamQuery>();
 
@@ -167,7 +167,7 @@ namespace SmartExam.API.Controllers
             }
         }
 
-        // DELETE api/<ExamQueriesController>/Delete/5
+        // DELETE api/<ExamQueriesController>/Delete
         [HttpPost("Delete")]
         public async Task<IActionResult> Delete([FromBody] DeleteExamQueryDTO dto)
         {

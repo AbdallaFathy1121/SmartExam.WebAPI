@@ -29,10 +29,10 @@ namespace SmartExam.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            ApiResponse<IReadOnlyList<ExamQueryDTO>> response = new ApiResponse<IReadOnlyList<ExamQueryDTO>>();
+            ApiResponse<IReadOnlyList<ModelDTO>> response = new ApiResponse<IReadOnlyList<ModelDTO>>();
 
             IReadOnlyList<Model> result = await _unitOfWork.ModelRepository.GetAllAsync();
-            IReadOnlyList<ExamQueryDTO> dto = _mapper.Map<IReadOnlyList<ExamQueryDTO>>(result);
+            IReadOnlyList<ModelDTO> dto = _mapper.Map<IReadOnlyList<ModelDTO>>(result);
 
             response.IsSuccess = true;
             response.Data = dto;
@@ -44,10 +44,10 @@ namespace SmartExam.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            ApiResponse<ExamQueryDTO> response = new ApiResponse<ExamQueryDTO>();
+            ApiResponse<ModelDTO> response = new ApiResponse<ModelDTO>();
 
             Model result = await _unitOfWork.ModelRepository.GetByIdAsync(id, []);
-            ExamQueryDTO dto = _mapper.Map<ExamQueryDTO>(result);
+            ModelDTO dto = _mapper.Map<ModelDTO>(result);
 
             response.IsSuccess = true;
             response.Data = dto;
@@ -103,7 +103,7 @@ namespace SmartExam.API.Controllers
 
         // PUT api/<ModelsController>/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] UpdateExamQueryDTO dto)
+        public async Task<IActionResult> Update(int id, [FromBody] UpdateModelDTO dto)
         {
             ApiResponse<Model> response = new ApiResponse<Model>();
 
@@ -142,7 +142,7 @@ namespace SmartExam.API.Controllers
 
         // DELETE api/<ModelsController>
         [HttpPost("Delete")]
-        public async Task<IActionResult> Delete([FromBody] DeleteExamQueryDTO dto)
+        public async Task<IActionResult> Delete([FromBody] DeleteModelDTO dto)
         {
             ApiResponse<string> response = new ApiResponse<string>();
 

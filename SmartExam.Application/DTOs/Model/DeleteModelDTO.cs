@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SmartExam.Application.DTOs.Model
 {
-    public record DeleteExamQueryDTO (
+    public record DeleteModelDTO (
         int Id
     );
 }

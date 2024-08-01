@@ -15,7 +15,7 @@ namespace SmartExam.Application.AutoMapper
         {
             CreateMap<AddModelDTO, Model>();
 
-            CreateMap<Model, ExamQueryDTO>();
+            CreateMap<Model, ModelDTO>();
         }
     }
 }

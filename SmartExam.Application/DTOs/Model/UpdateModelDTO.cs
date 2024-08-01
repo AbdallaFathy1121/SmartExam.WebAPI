@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SmartExam.Application.DTOs.Model
 {
-    public record UpdateExamQueryDTO(
+    public record UpdateModelDTO (
         string Name
     );
 }
