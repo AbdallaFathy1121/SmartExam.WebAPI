@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Domain.Constants;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +14,6 @@ using System.Globalization;
 
 namespace SmartExam.API.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ExamQueriesController : ControllerBase
@@ -28,7 +28,7 @@ namespace SmartExam.API.Controllers
             _mapper = mapper;
         }
 
-
+        [Authorize(Roles = Roles.Admin)]
         // GET: api/<ExamQueriesController>
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
@@ -84,6 +84,7 @@ namespace SmartExam.API.Controllers
             }
         }
 
+        [Authorize]
         // POST api/<ExamQueriesController>
         [HttpPost("Add")]
         public async Task<IActionResult> Add([FromBody] AddExamQueryDTO dto)
@@ -124,6 +125,7 @@ namespace SmartExam.API.Controllers
             }
         }
 
+        [Authorize]
         // PUT api/<ExamQueriesController>/Update/5
         [HttpPut("Update/{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateExamQueryDTO dto)
@@ -167,6 +169,7 @@ namespace SmartExam.API.Controllers
             }
         }
 
+        [Authorize]
         // DELETE api/<ExamQueriesController>/Delete
         [HttpPost("Delete")]
         public async Task<IActionResult> Delete([FromBody] DeleteExamQueryDTO dto)
