@@ -57,6 +57,7 @@ namespace Application.Extensions
                .AddAutoMapper(typeof(QuestionProfile).Assembly)
                .AddAutoMapper(typeof(ExamProfile).Assembly)
                .AddAutoMapper(typeof(ExamQueryProfile).Assembly)
+               .AddAutoMapper(typeof(StudentExamProfile).Assembly)
                .AddAutoMapper(typeof(ModelProfile).Assembly);
         }
     }
