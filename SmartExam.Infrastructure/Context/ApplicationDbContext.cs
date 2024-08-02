@@ -22,5 +22,6 @@ namespace Namshi.Infrastructure.Context
         public virtual DbSet<Question> Questions { get; set; }
         public virtual DbSet<Exam> Exams { get; set; }
         public virtual DbSet<ExamQuery> ExamQueries { get; set; }
+        public virtual DbSet<StudentExam> StudentExams { get; set; }
     }
 }
