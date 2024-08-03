@@ -13,7 +13,7 @@ namespace SmartExam.Application.TypeConverter
         public DateOnly Convert(string source, DateOnly destination, ResolutionContext context)
         {
             // Assuming the string is in the format "yyyy-MM-dd"
-            if (DateOnly.TryParseExact(source, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var date))
+            if (DateOnly.TryParseExact(source, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var date))
             {
                 return date;
             }

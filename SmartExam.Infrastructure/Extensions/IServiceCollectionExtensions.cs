@@ -1,23 +1,13 @@
-﻿using Castle.Core.Configuration;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Namshi.Infrastructure.Context;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 using Microsoft.AspNetCore.Identity;
 using SmartExam.Application.Interfaces.Repositories;
 using SmartExam.Domain.Entities;
 using SmartExam.Infrastructure.Repositories;
-using System.Reflection;
 using FluentValidation.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
-using SmartExam.Application.AutoMapper;
-using FluentValidation;
 using SmartExam.Infrastructure.Validators.ChapterValidator;
 using Application.Interfaces.Repositories;
 using Infrastructure.Repositories;
@@ -28,6 +18,9 @@ using SmartExam.Infrastructure.Validators.QuestionValidator;
 using SmartExam.Infrastructure.Validators.ExamValidator;
 using SmartExam.Infrastructure.Validators.ExamQueryValidator;
 using SmartExam.Infrastructure.Validators.StudentExamValidator;
+using Hangfire;
+using SmartExam.Application.Interfaces.Services;
+using SmartExam.Infrastructure.Services;
 
 namespace SmartExam.Infrastructure.Extensions
 {
@@ -38,6 +31,7 @@ namespace SmartExam.Infrastructure.Extensions
             services.AddDbContext(configuration);
             services.AddRepositories();
             services.AddFluentValidation();
+            services.AddHangfire(configuration);
         }
         public static void AddDbContext(this IServiceCollection services, IConfiguration configuration)
         {
@@ -57,6 +51,7 @@ namespace SmartExam.Infrastructure.Extensions
 
                 // Services
                 .AddScoped<IUserService, UserService>()
+                .AddScoped<IChangeExamStatus, ChangeExamStatus>()
 
                 .Configure<IdentityOptions>(options =>
                 {
@@ -84,6 +79,14 @@ namespace SmartExam.Infrastructure.Extensions
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<ExamQueryValidator>())
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<StudentExamValidator>())
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<SubjectValidator>());
+        }
+
+        private static void AddHangfire(this IServiceCollection services, IConfiguration configuration)
+        {
+            var connectionString = configuration.GetConnectionString("DefaultConnection");
+
+            services.AddHangfire(x => x.UseSqlServerStorage(connectionString));
+            services.AddHangfireServer();
         }
 
     }

@@ -1,4 +1,5 @@
 using Application.Extensions;
+using Hangfire;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using SmartExam.Application.ErorrHandling;
@@ -92,6 +93,8 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseHangfireDashboard("/Hangfire");
 
 app.MapControllers();
 

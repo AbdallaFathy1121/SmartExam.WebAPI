@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using Domain.Constants;
 using FluentValidation;
+using Hangfire;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SmartExam.Application.DTOs.ApiResponse;
 using SmartExam.Application.DTOs.Exam;
 using SmartExam.Application.Interfaces.Repositories;
+using SmartExam.Application.Interfaces.Services;
 using SmartExam.Domain.Entities;
 using System.Globalization;
 
@@ -20,11 +22,13 @@ namespace SmartExam.API.Controllers
         private IValidator<Exam> _validator;
         private IUnitOfWork _unitOfWork;
         private IMapper _mapper;
-        public ExamsController(IUnitOfWork unitOfWork, IValidator<Exam> validator, IMapper mapper)
+        private IChangeExamStatus _changeExamStatus;
+        public ExamsController(IUnitOfWork unitOfWork, IValidator<Exam> validator, IMapper mapper, IChangeExamStatus changeExamStatus)
         {
             _unitOfWork = unitOfWork;
             _validator = validator;
             _mapper = mapper;
+            _changeExamStatus = changeExamStatus;
         }
 
 
@@ -87,7 +91,7 @@ namespace SmartExam.API.Controllers
         [HttpPost("Add")]
         public async Task<IActionResult> Add([FromForm] AddExamDTO dto)
         {
-            ApiResponse<AddExamDTO> response = new ApiResponse<AddExamDTO>();
+            ApiResponse<int> response = new ApiResponse<int>();
 
             IList<Exam> findExamByName = await _unitOfWork.ExamRepository.GetWhereAsync(a => a.Name == dto.Name && a.UserId == dto.userId);
             if (findExamByName.Count() <= 0)
@@ -95,7 +99,6 @@ namespace SmartExam.API.Controllers
                 Subject findSubjectById = await _unitOfWork.SubjectRepository.GetByIdAsync(dto.subjectId);
                 if (findSubjectById is not null)
                 {
-
                     Exam exam = _mapper.Map<Exam>(dto);
 
                     var validationResult = await _validator.ValidateAsync(exam);
@@ -112,8 +115,23 @@ namespace SmartExam.API.Controllers
                         await _unitOfWork.ExamRepository.AddAsync(exam);
                         await _unitOfWork.CompleteAsync();
 
+                        // Combine DateOnly and TimeOnly into DateTime
+                        DateTime startDateTime = exam.StartDate.ToDateTime(exam.StartTime);
+
+                        // Get current DateTime
+                        DateTime currentDateTime = DateTime.Now;
+
+                        // Calculate the time difference
+                        TimeSpan timeDifference = startDateTime - currentDateTime;
+
+                        // Convert the time difference to minutes
+                        int totalMinutes = (int)timeDifference.TotalMinutes;
+
+                        // Background Task to set ExamStatus => True When Exam Start Date and Time
+                        BackgroundJob.Schedule(() => _changeExamStatus.ChangeExamStatu(exam, true), TimeSpan.FromMinutes(totalMinutes));
+
                         response.IsSuccess = true;
-                        response.Data = dto;
+                        response.Data = exam.Id;
                         response.Message = "تم الاضافة بنجاح";
 
                         return Ok(response);
@@ -142,7 +160,7 @@ namespace SmartExam.API.Controllers
             if (exam is not null)
             {
                 // Assuming the string is in the format "yyyy-MM-dd"
-                if (DateOnly.TryParseExact(dto.StartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var date))
+                if (DateOnly.TryParseExact(dto.StartDate, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var date))
                 {
                     exam.StartDate = date;
                 }
