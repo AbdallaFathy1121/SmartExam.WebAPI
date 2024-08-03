@@ -93,6 +93,7 @@ namespace SmartExam.API.Controllers
                     await _unitOfWork.CompleteAsync();
 
                     response.IsSuccess = true;
+                    response.Data = dto;
                     response.Message = "تم الاضافة بنجاح";
 
                     return Ok(response);

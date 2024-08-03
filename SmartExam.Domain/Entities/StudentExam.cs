@@ -9,10 +9,7 @@ namespace SmartExam.Domain.Entities
 {
     public class StudentExam: BaseEntity
     {
-        [MinLength(7, ErrorMessage = "Should more than 7 char")]
         public required string FullName { get; set; }
-
-        [EmailAddress(ErrorMessage ="write Correct Email")]
         public required string Email { get; set; }
         public required int ExamId { get; set; }
 
