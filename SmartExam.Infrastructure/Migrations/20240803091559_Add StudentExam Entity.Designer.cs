@@ -12,8 +12,8 @@ using Namshi.Infrastructure.Context;
 namespace SmartExam.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240721181811_Update Chapter")]
-    partial class UpdateChapter
+    [Migration("20240803091559_Add StudentExam Entity")]
+    partial class AddStudentExamEntity
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -183,6 +183,180 @@ namespace SmartExam.Infrastructure.Migrations
                     b.ToTable("Chapters");
                 });
 
+            modelBuilder.Entity("SmartExam.Domain.Entities.Exam", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DurationTime")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateOnly>("StartDate")
+                        .HasColumnType("date");
+
+                    b.Property<TimeOnly>("StartTime")
+                        .HasColumnType("time");
+
+                    b.Property<bool?>("Status")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("SubjectId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SubjectId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Exams");
+                });
+
+            modelBuilder.Entity("SmartExam.Domain.Entities.ExamQuery", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ChapterId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ExamId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ModelId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QuestionNumbers")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChapterId");
+
+                    b.HasIndex("ExamId");
+
+                    b.HasIndex("ModelId");
+
+                    b.ToTable("ExamQueries");
+                });
+
+            modelBuilder.Entity("SmartExam.Domain.Entities.Model", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ChapterId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChapterId");
+
+                    b.ToTable("Models");
+                });
+
+            modelBuilder.Entity("SmartExam.Domain.Entities.Question", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Answer1")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Answer2")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Answer3")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Answer4")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CorrectAnswer")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ModelId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("QuestionName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ModelId");
+
+                    b.ToTable("Questions");
+                });
+
+            modelBuilder.Entity("SmartExam.Domain.Entities.StudentExam", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ExamId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ExamId");
+
+                    b.ToTable("StudentExams");
+                });
+
             modelBuilder.Entity("SmartExam.Domain.Entities.Subject", b =>
                 {
                     b.Property<int>("Id")
@@ -340,6 +514,85 @@ namespace SmartExam.Infrastructure.Migrations
                     b.Navigation("Subject");
                 });
 
+            modelBuilder.Entity("SmartExam.Domain.Entities.Exam", b =>
+                {
+                    b.HasOne("SmartExam.Domain.Entities.Subject", "Subject")
+                        .WithMany("Exams")
+                        .HasForeignKey("SubjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SmartExam.Domain.Entities.User", "User")
+                        .WithMany("Exams")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Subject");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SmartExam.Domain.Entities.ExamQuery", b =>
+                {
+                    b.HasOne("SmartExam.Domain.Entities.Chapter", "Chapter")
+                        .WithMany("ExamQueries")
+                        .HasForeignKey("ChapterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SmartExam.Domain.Entities.Exam", "Exam")
+                        .WithMany("ExamQueries")
+                        .HasForeignKey("ExamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SmartExam.Domain.Entities.Model", "Model")
+                        .WithMany("ExamQueries")
+                        .HasForeignKey("ModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Chapter");
+
+                    b.Navigation("Exam");
+
+                    b.Navigation("Model");
+                });
+
+            modelBuilder.Entity("SmartExam.Domain.Entities.Model", b =>
+                {
+                    b.HasOne("SmartExam.Domain.Entities.Chapter", "Chapter")
+                        .WithMany("Models")
+                        .HasForeignKey("ChapterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Chapter");
+                });
+
+            modelBuilder.Entity("SmartExam.Domain.Entities.Question", b =>
+                {
+                    b.HasOne("SmartExam.Domain.Entities.Model", "Model")
+                        .WithMany("Questions")
+                        .HasForeignKey("ModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Model");
+                });
+
+            modelBuilder.Entity("SmartExam.Domain.Entities.StudentExam", b =>
+                {
+                    b.HasOne("SmartExam.Domain.Entities.Exam", "Exam")
+                        .WithMany("StudentExams")
+                        .HasForeignKey("ExamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Exam");
+                });
+
             modelBuilder.Entity("SmartExam.Domain.Entities.Subject", b =>
                 {
                     b.HasOne("SmartExam.Domain.Entities.User", "User")
@@ -351,13 +604,38 @@ namespace SmartExam.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("SmartExam.Domain.Entities.Chapter", b =>
+                {
+                    b.Navigation("ExamQueries");
+
+                    b.Navigation("Models");
+                });
+
+            modelBuilder.Entity("SmartExam.Domain.Entities.Exam", b =>
+                {
+                    b.Navigation("ExamQueries");
+
+                    b.Navigation("StudentExams");
+                });
+
+            modelBuilder.Entity("SmartExam.Domain.Entities.Model", b =>
+                {
+                    b.Navigation("ExamQueries");
+
+                    b.Navigation("Questions");
+                });
+
             modelBuilder.Entity("SmartExam.Domain.Entities.Subject", b =>
                 {
                     b.Navigation("Chapters");
+
+                    b.Navigation("Exams");
                 });
 
             modelBuilder.Entity("SmartExam.Domain.Entities.User", b =>
                 {
+                    b.Navigation("Exams");
+
                     b.Navigation("Subjects");
                 });
 #pragma warning restore 612, 618

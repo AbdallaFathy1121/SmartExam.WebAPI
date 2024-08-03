@@ -13,7 +13,6 @@ using System.Globalization;
 
 namespace SmartExam.API.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ExamsController : ControllerBase
@@ -30,7 +29,6 @@ namespace SmartExam.API.Controllers
 
 
         // GET: api/<ExamsController>
-        [Authorize(Roles = Roles.Admin)]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
