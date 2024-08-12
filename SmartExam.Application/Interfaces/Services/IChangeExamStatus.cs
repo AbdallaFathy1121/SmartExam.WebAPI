@@ -9,6 +9,6 @@ namespace SmartExam.Application.Interfaces.Services
 {
     public interface IChangeExamStatus
     {
-        Task<bool> ChangeExamStatu(Exam exam, bool status);
+        void ChangeExamStatu(Exam exam, bool status);
     }
 }

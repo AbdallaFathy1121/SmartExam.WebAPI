@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using Application.Interfaces.Services;
+using AutoMapper;
 using Domain.Constants;
 using FluentValidation;
 using Hangfire;
@@ -23,17 +24,23 @@ namespace SmartExam.API.Controllers
         private IUnitOfWork _unitOfWork;
         private IMapper _mapper;
         private IChangeExamStatus _changeExamStatus;
-        public ExamsController(IUnitOfWork unitOfWork, IValidator<Exam> validator, IMapper mapper, IChangeExamStatus changeExamStatus)
+        private IUserService _userService;
+        public ExamsController(IUnitOfWork unitOfWork, 
+            IValidator<Exam> validator, 
+            IMapper mapper, 
+            IChangeExamStatus changeExamStatus,
+            IUserService userService)
         {
             _unitOfWork = unitOfWork;
             _validator = validator;
             _mapper = mapper;
             _changeExamStatus = changeExamStatus;
+            _userService = userService;
         }
 
 
         // GET: api/<ExamsController>
-        [HttpGet]
+        [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {
             ApiResponse<IReadOnlyList<ExamDTO>> response = new ApiResponse<IReadOnlyList<ExamDTO>>();
@@ -89,10 +96,17 @@ namespace SmartExam.API.Controllers
 
         // POST api/<ExamsController>
         [HttpPost("Add")]
-        public async Task<IActionResult> Add([FromForm] AddExamDTO dto)
+        public async Task<IActionResult> Add([FromBody] AddExamDTO dto)
         {
-            ApiResponse<int> response = new ApiResponse<int>();
+            ApiResponse<object> response = new ApiResponse<object>();
 
+            var findUser = await _userService.GetUserByIdAsync(dto.userId);
+            if (findUser.Data is null)
+            {
+                response.ErrorMessages!.Add("Invalid User Id");
+                return NotFound(response);
+            }
+          
             IList<Exam> findExamByName = await _unitOfWork.ExamRepository.GetWhereAsync(a => a.Name == dto.Name && a.UserId == dto.userId);
             if (findExamByName.Count() <= 0)
             {
@@ -125,13 +139,24 @@ namespace SmartExam.API.Controllers
                         TimeSpan timeDifference = startDateTime - currentDateTime;
 
                         // Convert the time difference to minutes
-                        int totalMinutes = (int)timeDifference.TotalMinutes;
+                        double minutesStartExam = (double)timeDifference.TotalMinutes;
+
+                        // Calculate End Exam by Minutes
+                        double minutesEndExam = minutesStartExam + dto.DurrationTime;
 
                         // Background Task to set ExamStatus => True When Exam Start Date and Time
-                        BackgroundJob.Schedule(() => _changeExamStatus.ChangeExamStatu(exam, true), TimeSpan.FromMinutes(totalMinutes));
+                        BackgroundJob.Schedule(() => _changeExamStatus.ChangeExamStatu(exam, true), TimeSpan.FromMinutes(minutesStartExam));
+
+                        // Background Task to set ExamStatus => False When Exam End Date and Time
+                        BackgroundJob.Schedule(() => _changeExamStatus.ChangeExamStatu(exam, false), TimeSpan.FromMinutes(minutesEndExam));
 
                         response.IsSuccess = true;
-                        response.Data = exam.Id;
+                        response.Data = new
+                        {
+                            id = exam.Id,
+                            name = exam.Name, 
+                            status = exam.Status,
+                        };
                         response.Message = "تم الاضافة بنجاح";
 
                         return Ok(response);
@@ -152,7 +177,7 @@ namespace SmartExam.API.Controllers
 
         // PUT api/<ExamsController>/5
         [HttpPut("Update/{id}")]
-        public async Task<IActionResult> Update(int id, [FromForm] UpdateExamDTO dto)
+        public async Task<IActionResult> Update(int id, [FromBody] UpdateExamDTO dto)
         {
             ApiResponse<Exam> response = new ApiResponse<Exam>();
 
@@ -172,8 +197,7 @@ namespace SmartExam.API.Controllers
                 }
 
                 exam.Name = dto.Name;
-                exam.DurationTime = dto.DurrationTime;
-                exam.Status = dto.Status;
+                exam.DurrationTime = dto.DurrationTime;
 
                 var validationResult = await _validator.ValidateAsync(exam);
                 if (!validationResult.IsValid)

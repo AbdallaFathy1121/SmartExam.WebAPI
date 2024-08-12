@@ -12,8 +12,8 @@ using Namshi.Infrastructure.Context;
 namespace SmartExam.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240803091559_Add StudentExam Entity")]
-    partial class AddStudentExamEntity
+    [Migration("20240812094255_Initial Migrate")]
+    partial class InitialMigrate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -194,7 +194,7 @@ namespace SmartExam.Infrastructure.Migrations
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("DurationTime")
+                    b.Property<int>("DurrationTime")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")

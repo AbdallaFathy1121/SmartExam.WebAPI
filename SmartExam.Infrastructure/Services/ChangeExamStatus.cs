@@ -1,4 +1,5 @@
-﻿using SmartExam.Application.Interfaces.Repositories;
+﻿using Hangfire;
+using SmartExam.Application.Interfaces.Repositories;
 using SmartExam.Application.Interfaces.Services;
 using SmartExam.Domain.Entities;
 using System;
@@ -18,13 +19,11 @@ namespace SmartExam.Infrastructure.Services
         }
 
 
-        public async Task<bool> ChangeExamStatu(Exam exam, bool status)
+        public void ChangeExamStatu(Exam exam, bool status)
         {
             exam.Status = status;
-            await _unitOfWork.ExamRepository.UpdateAsync(exam.Id, exam);
-            await _unitOfWork.CompleteAsync();
-
-            return status;
+            _unitOfWork.ExamRepository.UpdateAsync(exam.Id, exam);
+            _unitOfWork.CompleteAsync();
         }
     }
 }

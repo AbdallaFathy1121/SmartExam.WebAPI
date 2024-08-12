@@ -32,7 +32,7 @@ namespace SmartExam.API.Controllers
 
 
         // GET: api/<SubjectsController>
-        [HttpGet]
+        [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {
             ApiResponse<IList<SubjectDTO>> response = new ApiResponse<IList<SubjectDTO>>();
@@ -47,7 +47,7 @@ namespace SmartExam.API.Controllers
         }
 
         // GET api/<SubjectsController>/5
-        [HttpGet("{id}")]
+        [HttpGet("GetById/{id}")]
         public async Task<IActionResult> GetById(int id)
         {
             ApiResponse<SubjectDTO> response = new ApiResponse<SubjectDTO>();
@@ -62,13 +62,13 @@ namespace SmartExam.API.Controllers
         }
 
         // POST api/<SubjectsController>
-        [HttpPost]
+        [HttpPost("Add")]
         public async Task<IActionResult> Add([FromBody] AddSubjectDTO dto)
         {
             ApiResponse<string> response = new ApiResponse<string>();
 
             var findUser = await _userService.GetUserByIdAsync(dto.UserId);
-            if (findUser is not null) 
+            if (findUser.Data is not null) 
             {
                 Subject subject = _mapper.Map<Subject>(dto);
                 var validationResult = await _validator.ValidateAsync(subject);
@@ -99,7 +99,7 @@ namespace SmartExam.API.Controllers
         }
 
         // PUT api/<SubjectsController>/5
-        [HttpPut("{id}")]
+        [HttpPut("Update/{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateSubjectDTO dto)
         {
             ApiResponse<Subject> response = new ApiResponse<Subject>();

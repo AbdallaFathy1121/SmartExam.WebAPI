@@ -48,7 +48,7 @@ namespace SmartExam.API.Controllers
         }
 
         // GET api/<QuestionsController>/5
-        [HttpGet("GetById")]
+        [HttpGet("GetById/{id}")]
         public async Task<IActionResult> GetById(int id)
         {
             ApiResponse<QuestionDTO> response = new ApiResponse<QuestionDTO>();
@@ -67,7 +67,7 @@ namespace SmartExam.API.Controllers
         }
 
         // POST api/<QuestionsController>
-        [HttpPost]
+        [HttpPost("Add")]
         public async Task<IActionResult> Add([FromBody] AddQuestionDTO dto)
         {
             ApiResponse<AddQuestionDTO> response = new ApiResponse<AddQuestionDTO>();
@@ -106,7 +106,7 @@ namespace SmartExam.API.Controllers
         }
 
         // PUT api/<QuestionsController>/5
-        [HttpPut("{id}")]
+        [HttpPut("Update/{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateQuestionDTO dto)
         {
             ApiResponse<Question> response = new ApiResponse<Question>();

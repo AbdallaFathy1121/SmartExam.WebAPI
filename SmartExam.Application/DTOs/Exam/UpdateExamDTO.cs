@@ -8,9 +8,8 @@ namespace SmartExam.Application.DTOs.Exam
 {
     public record UpdateExamDTO (
         string Name,
-        string StartDate,
-        string StartTime,
-        int DurrationTime,
-        bool Status
+        string StartDate,  // Note: StartDate is a string here formate => "15-08-2024"
+        string StartTime,  // Note: StartTime is a string here formate => "12:20"
+        int DurrationTime
     );
 }

@@ -26,7 +26,7 @@ namespace SmartExam.API.Controllers
         }
 
         // GET: api/<ModelsController>
-        [HttpGet]
+        [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {
             ApiResponse<IReadOnlyList<ModelDTO>> response = new ApiResponse<IReadOnlyList<ModelDTO>>();
@@ -41,8 +41,8 @@ namespace SmartExam.API.Controllers
         }
 
         // GET api/<ModelsController>/5
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        [HttpGet("GetById/{id}")]
+        public async Task<IActionResult> GetById(int id)
         {
             ApiResponse<ModelDTO> response = new ApiResponse<ModelDTO>();
 
@@ -56,7 +56,7 @@ namespace SmartExam.API.Controllers
         }
 
         // POST api/<ModelsController>
-        [HttpPost]
+        [HttpPost("Add")]
         public async Task<IActionResult> Add([FromBody] AddModelDTO dto)
         {
             ApiResponse<AddModelDTO> response = new ApiResponse<AddModelDTO>();
@@ -102,7 +102,7 @@ namespace SmartExam.API.Controllers
         }
 
         // PUT api/<ModelsController>/5
-        [HttpPut("{id}")]
+        [HttpPut("Update/{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateModelDTO dto)
         {
             ApiResponse<Model> response = new ApiResponse<Model>();

@@ -17,7 +17,7 @@ namespace SmartExam.Domain.Entities
         public required string Name { get; set; }
         public required DateOnly StartDate { get; set; }
         public required TimeOnly StartTime { get; set; }
-        public required int DurationTime { get; set; }
+        public required int DurrationTime { get; set; }
         public Boolean? Status { get; set; } = false;
         public required string UserId { get; set; }
         public required int SubjectId { get; set; }

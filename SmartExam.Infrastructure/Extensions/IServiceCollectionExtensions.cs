@@ -21,6 +21,7 @@ using SmartExam.Infrastructure.Validators.StudentExamValidator;
 using Hangfire;
 using SmartExam.Application.Interfaces.Services;
 using SmartExam.Infrastructure.Services;
+using Newtonsoft.Json;
 
 namespace SmartExam.Infrastructure.Extensions
 {
@@ -33,7 +34,7 @@ namespace SmartExam.Infrastructure.Extensions
             services.AddFluentValidation();
             services.AddHangfire(configuration);
         }
-        public static void AddDbContext(this IServiceCollection services, IConfiguration configuration)
+        private static void AddDbContext(this IServiceCollection services, IConfiguration configuration)
         {
             var connectionString = configuration.GetConnectionString("DefaultConnection");
 
@@ -51,7 +52,7 @@ namespace SmartExam.Infrastructure.Extensions
 
                 // Services
                 .AddScoped<IUserService, UserService>()
-                .AddScoped<IChangeExamStatus, ChangeExamStatus>()
+                .AddTransient<IChangeExamStatus, ChangeExamStatus>()
 
                 .Configure<IdentityOptions>(options =>
                 {
@@ -85,7 +86,13 @@ namespace SmartExam.Infrastructure.Extensions
         {
             var connectionString = configuration.GetConnectionString("DefaultConnection");
 
-            services.AddHangfire(x => x.UseSqlServerStorage(connectionString));
+            services.AddHangfire((sp, config) =>
+            {
+                //Add the line below
+                config.UseSqlServerStorage(connectionString);
+                config.UseSerializerSettings(new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+            });
+
             services.AddHangfireServer();
         }
 

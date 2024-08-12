@@ -31,7 +31,7 @@ namespace E_Exam_WebAPI.Controllers
 
         // GET: api/Users/{Id}
         [Authorize]
-        [HttpGet("{id}")]
+        [HttpGet("GetById/{id}")]
         public async Task<IActionResult> GetUserByIdAsync(string id)
         {
             var result = await _userService.GetUserByIdAsync(id);

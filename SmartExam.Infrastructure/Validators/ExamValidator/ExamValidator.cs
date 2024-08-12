@@ -21,7 +21,7 @@ namespace SmartExam.Infrastructure.Validators.ExamValidator
             RuleFor(x => x.StartTime)
                 .NotNull().WithMessage("Start Time is Required!");
 
-            RuleFor(x => x.DurationTime)
+            RuleFor(x => x.DurrationTime)
                 .NotNull().WithMessage("Duration Time is Required!");
 
             RuleFor(x => x.UserId)
