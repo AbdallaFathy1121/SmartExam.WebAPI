@@ -91,6 +91,13 @@ namespace SmartExam.API.Controllers
         {
             ApiResponse<AddExamQueryDTO> response = new ApiResponse<AddExamQueryDTO>();
 
+            Model findModel = await _unitOfWork.ModelRepository.GetByIdAsync(dto.ModelId);
+            if (findModel is null)
+            {
+                response.ErrorMessages!.Add("Invalid Model Id");
+                return NotFound(response);
+            }
+
             Exam findExamId = await _unitOfWork.ExamRepository.GetByIdAsync(dto.ExamId);
             if (findExamId is not null)
             {
@@ -131,12 +138,16 @@ namespace SmartExam.API.Controllers
         {
             ApiResponse<ExamQuery> response = new ApiResponse<ExamQuery>();
 
+            Model findModel = await _unitOfWork.ModelRepository.GetByIdAsync(dto.ModelId);
+            if (findModel is null)
+            {
+                response.ErrorMessages!.Add("Invalid Model Id");
+                return NotFound(response);
+            }
+
             ExamQuery examQuery = await _unitOfWork.ExamQueryRepository.GetByIdAsync(id);
             if (examQuery is not null)
             {
-
-                examQuery.ExamId = dto.ExamId;
-                examQuery.ChapterId = dto.ChapterId;
                 examQuery.ModelId = dto.ModelId;
                 examQuery.QuestionNumbers = dto.QuestionNumbers;
 
