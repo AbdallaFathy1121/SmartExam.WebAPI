@@ -19,7 +19,5 @@ namespace SmartExam.Application.DTOs.Exam
         public object? User { get; set; }
         public object? Subject { get; set; }
 
-        // Parameterless constructor
-        public ExamDTO() { }
     }
 }

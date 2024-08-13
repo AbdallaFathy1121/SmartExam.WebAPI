@@ -40,6 +40,20 @@ namespace SmartExam.API.Controllers
             return Ok(response);
         }
 
+        // GET: api/<ModelsController>
+        [HttpGet("GetByChapterId/{chapterId}")]
+        public async Task<IActionResult> GetByChapterId(int chapterId)
+        {
+            ApiResponse<IList<ModelDTO>> response = new ApiResponse<IList<ModelDTO>>();
+
+            IList<Model> result = await _unitOfWork.ModelRepository.GetWhereAsync(a => a.ChapterId == chapterId);
+            IList<ModelDTO> dto = _mapper.Map<IList<ModelDTO>>(result);
+
+            response.IsSuccess = true;
+            response.Data = dto;
+            return Ok(response);
+        }
+
         // GET api/<ModelsController>/5
         [HttpGet("GetById/{id}")]
         public async Task<IActionResult> GetById(int id)

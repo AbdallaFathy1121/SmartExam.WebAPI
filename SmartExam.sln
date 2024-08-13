@@ -3,13 +3,18 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34525.116
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartExam.API", "SmartExam.API\SmartExam.API.csproj", "{25A39C00-AA27-4A37-90B4-0BE5866F205E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartExam.API", "SmartExam.API\SmartExam.API.csproj", "{25A39C00-AA27-4A37-90B4-0BE5866F205E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartExam.Domain", "SmartExam.Domain\SmartExam.Domain.csproj", "{205EC255-1B01-4929-AB44-EB53504C678D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartExam.Domain", "SmartExam.Domain\SmartExam.Domain.csproj", "{205EC255-1B01-4929-AB44-EB53504C678D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartExam.Application", "SmartExam.Application\SmartExam.Application.csproj", "{37C4831E-C749-4967-A5D5-C020E7A14993}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartExam.Application", "SmartExam.Application\SmartExam.Application.csproj", "{37C4831E-C749-4967-A5D5-C020E7A14993}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartExam.Infrastructure", "SmartExam.Infrastructure\SmartExam.Infrastructure.csproj", "{F90587EB-C215-472B-B43F-0ABF23EEA5FD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartExam.Infrastructure", "SmartExam.Infrastructure\SmartExam.Infrastructure.csproj", "{F90587EB-C215-472B-B43F-0ABF23EEA5FD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3863ED8F-51CA-4530-ADA2-84A141EBAFB6}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

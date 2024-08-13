@@ -91,10 +91,9 @@ namespace SmartExam.API.Controllers
         {
             ApiResponse<AddExamQueryDTO> response = new ApiResponse<AddExamQueryDTO>();
 
-            IList<Exam> findExamId = await _unitOfWork.ExamRepository.GetWhereAsync(a => a.Id == dto.ExamId);
-            if (findExamId.Count() <= 0)
+            Exam findExamId = await _unitOfWork.ExamRepository.GetByIdAsync(dto.ExamId);
+            if (findExamId is not null)
             {
-
                 ExamQuery examQuery = _mapper.Map<ExamQuery>(dto);
 
                 var validationResult = await _validator.ValidateAsync(examQuery);

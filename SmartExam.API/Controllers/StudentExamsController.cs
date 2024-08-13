@@ -70,7 +70,19 @@ namespace SmartExam.API.Controllers
         [HttpPost("Add")]
         public async Task<IActionResult> Add([FromBody] AddStudentExamDTO dto)
         {
-            ApiResponse<AddStudentExamDTO> response = new ApiResponse<AddStudentExamDTO>();
+            ApiResponse<StudentExam> response = new ApiResponse<StudentExam>();
+
+            var findExamById = await _unitOfWork.ExamRepository.GetByIdAsync(dto.ExamId);
+            if (findExamById is null)
+            {
+                response.ErrorMessages!.Add("Invalid Exam Id");
+                return NotFound(response);
+            }
+            else if (findExamById.Status == false)
+            {
+                response.ErrorMessages!.Add("Exam Closed");
+                return BadRequest(response);
+            }
 
             IList<StudentExam> findStudentExam = await _unitOfWork.StudentExamRepository.GetWhereAsync(a => a.ExamId == dto.ExamId && a.Email == dto.Email);
 
@@ -93,7 +105,7 @@ namespace SmartExam.API.Controllers
                     await _unitOfWork.CompleteAsync();
 
                     response.IsSuccess = true;
-                    response.Data = dto;
+                    response.Data = studentExam;
                     response.Message = "تم الاضافة بنجاح";
 
                     return Ok(response);

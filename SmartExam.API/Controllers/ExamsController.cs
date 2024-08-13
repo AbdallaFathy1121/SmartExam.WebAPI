@@ -5,6 +5,7 @@ using FluentValidation;
 using Hangfire;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using SmartExam.Application.DTOs.ApiResponse;
 using SmartExam.Application.DTOs.Exam;
 using SmartExam.Application.Interfaces.Repositories;
