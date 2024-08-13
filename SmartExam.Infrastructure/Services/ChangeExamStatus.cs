@@ -1,4 +1,5 @@
 ﻿using Hangfire;
+using Namshi.Infrastructure.Context;
 using SmartExam.Application.Interfaces.Repositories;
 using SmartExam.Application.Interfaces.Services;
 using SmartExam.Domain.Entities;
@@ -12,18 +13,18 @@ namespace SmartExam.Infrastructure.Services
 {
     public class ChangeExamStatus : IChangeExamStatus
     {
-        private readonly IUnitOfWork _unitOfWork;
-        public ChangeExamStatus(IUnitOfWork unitOfWork)
+        private readonly ApplicationDbContext _context;
+        public ChangeExamStatus(ApplicationDbContext context)
         {
-            _unitOfWork = unitOfWork;
+            _context = context;
         }
 
 
         public void ChangeExamStatu(Exam exam, bool status)
         {
             exam.Status = status;
-            _unitOfWork.ExamRepository.UpdateAsync(exam.Id, exam);
-            _unitOfWork.CompleteAsync();
+            _context.Exams.Update(exam);
+            _context.SaveChanges();
         }
     }
 }

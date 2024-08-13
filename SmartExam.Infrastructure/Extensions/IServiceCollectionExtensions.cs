@@ -52,7 +52,7 @@ namespace SmartExam.Infrastructure.Extensions
 
                 // Services
                 .AddScoped<IUserService, UserService>()
-                .AddTransient<IChangeExamStatus, ChangeExamStatus>()
+                .AddScoped<IChangeExamStatus, ChangeExamStatus>()
 
                 .Configure<IdentityOptions>(options =>
                 {

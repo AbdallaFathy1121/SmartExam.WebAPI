@@ -70,7 +70,7 @@ namespace SmartExam.API.Controllers
         [HttpPost("Add")]
         public async Task<IActionResult> Add([FromBody] AddStudentExamDTO dto)
         {
-            ApiResponse<StudentExam> response = new ApiResponse<StudentExam>();
+            ApiResponse<StudentExamDTO> response = new ApiResponse<StudentExamDTO>();
 
             var findExamById = await _unitOfWork.ExamRepository.GetByIdAsync(dto.ExamId);
             if (findExamById is null)
@@ -105,7 +105,7 @@ namespace SmartExam.API.Controllers
                     await _unitOfWork.CompleteAsync();
 
                     response.IsSuccess = true;
-                    response.Data = studentExam;
+                    response.Data = new StudentExamDTO(studentExam.Id, studentExam.FullName, studentExam.Email, studentExam.ExamId, null);
                     response.Message = "تم الاضافة بنجاح";
 
                     return Ok(response);
