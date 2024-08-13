@@ -38,6 +38,13 @@ namespace SmartExam.Infrastructure.Repositories
             }
         }
 
+        public async Task<T> GetFirstAsync(Expression<Func<T, bool>> match)
+        {
+            var result = await _context.Set<T>().FirstOrDefaultAsync(match);
+
+            return result;
+        }
+
         public async Task<IReadOnlyList<T>> GetAllAsync()
         {
             return await _context.Set<T>().AsNoTracking().ToListAsync();
