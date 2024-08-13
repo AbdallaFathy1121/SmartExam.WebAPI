@@ -15,9 +15,6 @@ namespace SmartExam.Infrastructure.Validators.ExamQueryValidator
             RuleFor(x => x.ExamId)
                 .NotNull().WithMessage("Exam ID is Required");
 
-            RuleFor(x => x.ChapterId)
-                .NotNull().WithMessage("Chapter Id is Required!");
-
             RuleFor(x => x.ModelId)
                 .NotNull().WithMessage("Model ID is Required!");
 

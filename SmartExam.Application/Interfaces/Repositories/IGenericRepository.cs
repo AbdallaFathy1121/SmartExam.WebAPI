@@ -14,6 +14,7 @@ namespace SmartExam.Application.Interfaces.Repositories
         Task<T> GetByIdAsync(int id, params Expression<Func<T, object>>[] includes);
         Task<IList<T>> GetWhereAsync(Expression<Func<T, bool>> match, params Expression<Func<T, object>>[] includes);
         Task AddAsync(T entity);
+        Task AddRangeAsync(IEnumerable<T> entities);
         Task UpdateAsync(int id, T entity);
         Task DeleteAsync(int id);
     }
