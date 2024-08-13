@@ -8,7 +8,6 @@ namespace SmartExam.Application.DTOs.ExamQuery
 {
     public record AddExamQueryDTO (
         int ExamId,
-        int ChapterId,
         int ModelId,
         int QuestionNumbers
     );

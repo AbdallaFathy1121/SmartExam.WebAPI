@@ -10,7 +10,6 @@ namespace SmartExam.Domain.Entities
     public class ExamQuery : BaseEntity
     {
         public required int ExamId { get; set; }
-        public required int ChapterId { get; set; }
         public required int ModelId { get; set; }
 
         [Range(1, 100, ErrorMessage ="Number of Questions should be between (1, 100)")]
@@ -19,7 +18,6 @@ namespace SmartExam.Domain.Entities
 
         // Realtions
         public virtual Exam? Exam { get; set; }
-        public virtual Chapter? Chapter { get; set; }
         public virtual Model? Model { get; set; }
     }
 }
