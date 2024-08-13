@@ -9,5 +9,6 @@ namespace SmartExam.Application.Interfaces.Repositories
 {
     public interface IExamQueryRepository: IGenericRepository<ExamQuery>
     {
+        Task<List<int>> GetRandomQuestionIdByQuery(IList<ExamQuery> examQueries);
     }
 }
