@@ -52,7 +52,9 @@ namespace SmartExam.API.Controllers
             ApiResponse<IList<ExamQueryDTO>> response = new ApiResponse<IList<ExamQueryDTO>>();
 
             IList<ExamQuery> examQueries = await _unitOfWork.ExamQueryRepository.GetWhereAsync(a => a.ExamId == examId);
-            
+
+            List<int> res = await _unitOfWork.ExamQueryRepository.GetRandomQuestionIdByQuery(examQueries);
+
             // Mapper
             IList<ExamQueryDTO> data = _mapper.Map<IList<ExamQueryDTO>>(examQueries);
 
@@ -81,6 +83,30 @@ namespace SmartExam.API.Controllers
             {
                 response.ErrorMessages!.Add("Not Found ExamQuery by this Id");
                 return NotFound(response);
+            }
+        }
+
+        // GET api/<ExamQueriesController>/GetByExamId/5
+        [HttpGet("GetListOfQuestionId/{examId}")]
+        public async Task<IActionResult> GetListOfQuestionId(int examId)
+        {
+            ApiResponse<List<int>> response = new ApiResponse<List<int>>();
+
+            IList<ExamQuery> examQueries = await _unitOfWork.ExamQueryRepository.GetWhereAsync(a => a.ExamId == examId);
+
+            if (examQueries.Count() <= 0)
+            {
+                response.ErrorMessages!.Add("Not found Exam Queries");
+                return NotFound(response);
+            }
+            else
+            {
+                // Return List Of QuestionId 
+                List<int> res = await _unitOfWork.ExamQueryRepository.GetRandomQuestionIdByQuery(examQueries);
+
+                response.IsSuccess = true;
+                response.Data = res;
+                return Ok(response);
             }
         }
 

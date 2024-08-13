@@ -8,6 +8,11 @@ namespace SmartExam.Domain.Entities
 {
     public class Question: BaseEntity
     {
+        public Question()
+        {
+            StudentExamQuestions = new HashSet<StudentExamQuestion>();
+        }
+
         public required string QuestionName { get; set; }
         public required string Answer1 { get; set; }
         public required string Answer2 { get; set; }
@@ -18,5 +23,6 @@ namespace SmartExam.Domain.Entities
 
         // Relations
         public virtual Model? Model { get; set; } = null;
+        public virtual ICollection<StudentExamQuestion>? StudentExamQuestions { get; set; }
     }
 }
