@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Namshi.Infrastructure.Context;
 
@@ -11,9 +12,11 @@ using Namshi.Infrastructure.Context;
 namespace SmartExam.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240813160500_Remove ChapterId from ExamQuery Entity")]
+    partial class RemoveChapterIdfromExamQueryEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -354,32 +357,6 @@ namespace SmartExam.Infrastructure.Migrations
                     b.ToTable("StudentExams");
                 });
 
-            modelBuilder.Entity("SmartExam.Domain.Entities.StudentExamQuestion", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("QuestionId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("StudentExamId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("QuestionId");
-
-                    b.HasIndex("StudentExamId");
-
-                    b.ToTable("StudentExamQuestions");
-                });
-
             modelBuilder.Entity("SmartExam.Domain.Entities.Subject", b =>
                 {
                     b.Property<int>("Id")
@@ -612,25 +589,6 @@ namespace SmartExam.Infrastructure.Migrations
                     b.Navigation("Exam");
                 });
 
-            modelBuilder.Entity("SmartExam.Domain.Entities.StudentExamQuestion", b =>
-                {
-                    b.HasOne("SmartExam.Domain.Entities.Question", "Question")
-                        .WithMany("StudentExamQuestions")
-                        .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SmartExam.Domain.Entities.StudentExam", "StudentExam")
-                        .WithMany("StudentExamQuestions")
-                        .HasForeignKey("StudentExamId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Question");
-
-                    b.Navigation("StudentExam");
-                });
-
             modelBuilder.Entity("SmartExam.Domain.Entities.Subject", b =>
                 {
                     b.HasOne("SmartExam.Domain.Entities.User", "User")
@@ -661,16 +619,6 @@ namespace SmartExam.Infrastructure.Migrations
                     b.Navigation("ExamQueries");
 
                     b.Navigation("Questions");
-                });
-
-            modelBuilder.Entity("SmartExam.Domain.Entities.Question", b =>
-                {
-                    b.Navigation("StudentExamQuestions");
-                });
-
-            modelBuilder.Entity("SmartExam.Domain.Entities.StudentExam", b =>
-                {
-                    b.Navigation("StudentExamQuestions");
                 });
 
             modelBuilder.Entity("SmartExam.Domain.Entities.Subject", b =>

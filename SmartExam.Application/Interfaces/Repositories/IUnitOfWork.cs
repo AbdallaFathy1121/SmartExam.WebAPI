@@ -15,6 +15,7 @@ namespace SmartExam.Application.Interfaces.Repositories
         IExamRepository ExamRepository { get; }
         IExamQueryRepository ExamQueryRepository { get; }
         IStudentExamRepository StudentExamRepository { get; }
+        IStudentExamQuestionRepository StudentExamQuestionRepository { get; }
 
         Task<int> CompleteAsync();
     }
