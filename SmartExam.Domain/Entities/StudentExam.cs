@@ -12,6 +12,7 @@ namespace SmartExam.Domain.Entities
         public StudentExam()
         {
             StudentExamQuestions = new HashSet<StudentExamQuestion>();
+            StudentAnswers = new HashSet<StudentAnswer>();
         }
 
         public required string FullName { get; set; }
@@ -21,5 +22,6 @@ namespace SmartExam.Domain.Entities
         // Relations
         public virtual Exam? Exam { get; set; }
         public virtual ICollection<StudentExamQuestion>? StudentExamQuestions { get; set; }
+        public virtual ICollection<StudentAnswer>? StudentAnswers { get; set; }
     }
 }
