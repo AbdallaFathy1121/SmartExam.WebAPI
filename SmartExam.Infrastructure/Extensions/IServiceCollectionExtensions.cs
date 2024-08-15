@@ -23,6 +23,7 @@ using SmartExam.Application.Interfaces.Services;
 using SmartExam.Infrastructure.Services;
 using Newtonsoft.Json;
 using SmartExam.Infrastructure.Validators.StudentExamQuestionValidator;
+using SmartExam.Infrastructure.Validators.StudentAnswerValidator;
 
 namespace SmartExam.Infrastructure.Extensions
 {
@@ -81,6 +82,7 @@ namespace SmartExam.Infrastructure.Extensions
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<ExamQueryValidator>())
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<StudentExamValidator>())
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<StudentExamQuestionValidator>())
+                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<StudentAnswerValidator>())
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<SubjectValidator>());
         }
 
