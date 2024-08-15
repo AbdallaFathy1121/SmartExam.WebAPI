@@ -95,6 +95,7 @@ namespace SmartExam.API.Controllers
             }
         }
 
+        [Authorize]
         // POST api/<ExamsController>
         [HttpPost("Add")]
         public async Task<IActionResult> Add([FromBody] AddExamDTO dto)
@@ -176,6 +177,7 @@ namespace SmartExam.API.Controllers
             }
         }
 
+        [Authorize]
         // PUT api/<ExamsController>/5
         [HttpPut("Update/{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateExamDTO dto)
@@ -228,6 +230,7 @@ namespace SmartExam.API.Controllers
             }
         }
 
+        [Authorize]
         // DELETE api/<ExamsController>/5
         [HttpPost("Delete")]
         public async Task<IActionResult> Delete([FromBody] DeleteExamDTO dto)

@@ -11,7 +11,6 @@ using SmartExam.Domain.Entities;
 
 namespace SmartExam.API.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class QuestionsController : ControllerBase
@@ -28,7 +27,7 @@ namespace SmartExam.API.Controllers
 
 
         // GET: api/<QuestionsController>
-        [HttpGet("GetByModelId")]
+        [HttpGet("GetByModelId/{modelId}")]
         public async Task<IActionResult> GetByModelId(int modelId)
         {
             ApiResponse<IList<QuestionDTO>> response = new ApiResponse<IList<QuestionDTO>>();
@@ -66,6 +65,7 @@ namespace SmartExam.API.Controllers
             return Ok(response);
         }
 
+        [Authorize]
         // POST api/<QuestionsController>
         [HttpPost("Add")]
         public async Task<IActionResult> Add([FromBody] AddQuestionDTO dto)
@@ -105,6 +105,7 @@ namespace SmartExam.API.Controllers
             }
         }
 
+        [Authorize]
         // PUT api/<QuestionsController>/5
         [HttpPut("Update/{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateQuestionDTO dto)
@@ -149,6 +150,7 @@ namespace SmartExam.API.Controllers
             }
         }
 
+        [Authorize]
         // DELETE api/<QuestionsController>/5
         [HttpPost("Delete")]
         public async Task<IActionResult> Delete([FromBody] DeleteQuestionDTO dto)
