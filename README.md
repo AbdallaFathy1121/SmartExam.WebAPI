@@ -1,27 +1,74 @@
-# ECommerce
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.1.4.
+# Bookify
+Bookify is a web application built on .NET MVC 7.0 designed to facilitate the rental and trading of books. It provides a platform for individuals to connect and engage in the exchange of used books.
 
-## Development server
+## Project Map
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+1. **Authors Management**
+   - Add Author
+   - Update Author
 
-## Code scaffolding
+2. **Categories Management**
+   - Add Category
+   - Update Category
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+3. **Books Management**
+   - Add Book
+   - Update Book
+   - Allow/Disallow Rentals
+   - Manage Copies
+     - Add Copy
+     - Update Copy
+     - Allow/Disallow Rentals for Copies
+     - View Copy Rentals History
 
-## Build
+4. **Subscribers Management**
+   - Add Subscriber
+   - Send Welcome Email
+   - Update Subscriber
+   - Block Subscriber
+   - View Subscriber Profile
+   - View Subscriber Rentals History
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+5. **Rentals Management**
+   - Add Rentals
+   - Update Rentals
+   - Send Rental Email
+   - Cancel Rental
+   - Handle Rental Returns
+   - Send Reminder Email
+   - Apply Delay Penalties
 
-## Running unit tests
+6. **User Management**
+   - Add User
+   - Update User
+   - Delete User
+   - Manage User Roles
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+7. **Reports**
+   
+8. **Search**
 
-## Running end-to-end tests
+## Dependencies
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+### Prerequisites
+- .NET 7.0
+- Vanilla JavaScript
+- jQuery
+- HTML & CSS
+- Metronic
 
-## Further help
+### Tools
+- View to HTML
+- UoN ExpressAnnotation
+- Serilog
+- OpenHtmlToPdf
+- Hashids
+- Hangfire
+- ClosedXML
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+### Libraries
+- Handlebars
+- Typeahead.js
+- ApexCharts
+
