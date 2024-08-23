@@ -20,6 +20,7 @@ namespace SmartExam.Infrastructure.Repositories
         public IStudentExamRepository StudentExamRepository { get; private set; }
         public IStudentExamQuestionRepository StudentExamQuestionRepository { get; private set; }
         public IStudentAnswerRepository StudentAnswerRepository { get; private set; }
+        public IExamResultRepository ExamResultRepository { get; private set; }
 
         public UnitOfWork(ApplicationDbContext context)
         {
@@ -33,6 +34,7 @@ namespace SmartExam.Infrastructure.Repositories
             StudentExamRepository = new StudentExamRepository(context);
             StudentExamQuestionRepository = new StudentExamQuestionRepository(context);
             StudentAnswerRepository = new StudentAnswerRepository(context);
+            ExamResultRepository = new ExamResultRepository(context);
         }
 
         public async Task<int> CompleteAsync()
