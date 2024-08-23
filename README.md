@@ -1,81 +1,90 @@
 
 # Smart Exam
 <ul>
-<li><b>API-Controlled Exam Creation:</b> Allows teachers to register, add subjects, and create models.</li>
-<li><b>Exam Structure:</b> Each model contains sections, and each section includes MCQ questions with correct answers, forming a question bank.</li>
+<li><b>API-Controlled Exam Creation:</b> Allows teachers to register, add subjects, and create Chapters.</li>
+<li><b>Exam Structure:</b> Each chapter contains models, and each model includes MCQ questions with correct answers, forming a question bank.</li>
 <li><b>Randomized Question Selection:</b> Teachers can specify the number of random questions from a particular model for exams.</li>
 <li><b>Automated Exam Process:</b> When a student starts an exam, the system randomly selects questions based on the teacher's criteria.</li>
 <li><b>Instant Grading:</b> After completing the exam, the student's score is immediately displayed.</li>
 </ul>
 
-
 ## Project Map
 
-1. **Authors Management**
-   - Add Author
-   - Update Author
+1. **Users Management**
+   - Get All
+   - Get By Id
+   - Register
+   - Login
+   - Delete
 
-2. **Categories Management**
-   - Add Category
-   - Update Category
+2. **Subjects Management**
+   - Get All
+   - Get By Id
+   - Add
+   - Update
+   - Delete
 
-3. **Books Management**
-   - Add Book
-   - Update Book
-   - Allow/Disallow Rentals
-   - Manage Copies
-     - Add Copy
-     - Update Copy
-     - Allow/Disallow Rentals for Copies
-     - View Copy Rentals History
+3. **Chapters Management**
+   - Get All
+   - Get By Id
+   - Get By Subject Id
+   - Add
+   - Update
+   - Delete
 
-4. **Subscribers Management**
-   - Add Subscriber
-   - Send Welcome Email
-   - Update Subscriber
-   - Block Subscriber
-   - View Subscriber Profile
-   - View Subscriber Rentals History
+4. **Models Management**
+   - Get All
+   - Get By Id
+   - Get By Chapter Id
+   - Add
+   - Update
+   - Delete
 
-5. **Rentals Management**
-   - Add Rentals
-   - Update Rentals
-   - Send Rental Email
-   - Cancel Rental
-   - Handle Rental Returns
-   - Send Reminder Email
-   - Apply Delay Penalties
+5. **Exams Management**
+   - Get All
+   - Get By User Id
+   - Get By Id
+   - Add
+   - Update
+   - Delete
 
-6. **User Management**
-   - Add User
-   - Update User
-   - Delete User
-   - Manage User Roles
+6. **Exam Queries Management**
+   - Get All
+   - Get By Id
+   - Get By Exam Id
+   - Add
+   - Update
+   - Delete
 
-7. **Reports**
+7. **Student Exams Management**
+   - Get All
+   - Get By Id
+   - Add
    
-8. **Search**
+8. **Student Exam Questions Management**
+   - Add List Of Questions By (Student Exam Id)
+   
+9. **Student Answers Management**
+    - Add List Of Answers
+
+10. **Exam Results Management**
+    - Add By Student Exam Id
+   
 
 ## Dependencies
 
-### Prerequisites
-- .NET 7.0
-- Vanilla JavaScript
-- jQuery
-- HTML & CSS
-- Metronic
+### Technologies
+- .NET 8.0 Web API
+- EF
+- Identity
+- LINQ
+- Clean Architecture
+- Repository Pattern
+- Unit of Work
+- MVVM Pattern
+- Global Error Handling
 
 ### Tools
-- View to HTML
-- UoN ExpressAnnotation
 - Serilog
-- OpenHtmlToPdf
-- Hashids
 - Hangfire
-- ClosedXML
-
-### Libraries
-- Handlebars
-- Typeahead.js
-- ApexCharts
 

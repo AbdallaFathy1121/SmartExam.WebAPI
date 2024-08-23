@@ -54,10 +54,5 @@ namespace SmartExam.API.Controllers
             response.Data = examResults;
             return Ok(response);
         }
-
-
-
-
-
     }
 }

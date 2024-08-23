@@ -26,13 +26,6 @@ namespace SmartExam.API.Controllers
         }
 
 
-        // GET: api/<StudentAnswersController>
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
-
         // POST api/<StudentAnswersController>/ Add
         [HttpPost("AddList")]
         public async Task<IActionResult> Add([FromBody] IList<AddStudentAnswerDTO> dtos)
